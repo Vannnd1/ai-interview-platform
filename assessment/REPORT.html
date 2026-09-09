@@ -152,269 +152,233 @@
 </style>
 </head>
 <body>
-<h1>Fullstack Product Engineer Case Study: AI Interview Platform Revamp</h1>
-<p><strong>Candidate Engineering Report &amp; Monozukuri Execution Narrative</strong></p>
+<h1>Laporan Studi Kasus Product Engineer: Perbaikan Platform AI Interview</h1>
+<p><strong>Dokumen Laporan Teknis &amp; Catatan Eksekusi Monozukuri</strong></p>
 <hr />
-<h2>1. Executive Summary &amp; Deliverable Links</h2>
+<h2>1. Ringkasan Singkat &amp; Tautan Penting</h2>
 <ul>
-<li><strong>Repository</strong>: <code>github.com/rakamindev/ai-interview-platform</code></li>
-<li><strong>Feature Branch</strong>: <code>feature/monozukuri-revamp</code></li>
-<li><strong>GitHub Pull Request</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code> <em>(or active submission PR)</em></li>
-<li><strong>Video Walkthrough Demonstration (3-5 min)</strong>: <code>[Insert Video Link Here - Loom / Google Drive / YouTube Unlisted]</code></li>
-<li><strong>Claimed Engineering Depth</strong>: <strong>Balanced Fullstack with Deep System Rigor &amp; Product Craftsmanship</strong></li>
-<li><em>Backend Depth</em>: Multi-tenant security isolation, database migration safety against existing rows, resilient AI response parser with markdown fence extraction, schema constraint mitigation for unassessed skills, and RSpec testing harness.</li>
-<li><em>Frontend Depth</em>: Data contract reconciliation, human override visual indicators (<code>✏</code>), graceful handling of unassessed and low-confidence skills, collapsible quote evidence components, responsive UI polish, and Vitest component test harness.</li>
+<li><strong>Repositori Asal</strong>: <code>github.com/rakamindev/ai-interview-platform</code></li>
+<li><strong>Branch Pengerjaan</strong>: <code>feature/monozukuri-revamp</code></li>
+<li><strong>Tautan Pull Request (PR) GitHub</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code> <em>(atau link PR aktif repositori)</em></li>
+<li><strong>Tautan Video Penjelasan (3-5 Menit)</strong>: <code>[Tempelkan Link Video di Sini - Google Drive / Loom / YouTube Unlisted]</code></li>
+<li><strong>Fokus Pengerjaan</strong>: <strong>Fullstack Seimbang (Sistem Backend Kokoh + Tampilan Web Rapi &amp; Manusiawi)</strong></li>
+<li><em>Di sisi Backend</em>: Menutup celah keamanan data antar-perusahaan (multi-tenant), membuat migrasi database yang aman untuk data lama, menangani parsing output AI Gemini agar anti-crash, memperbaiki aturan validasi untuk skill yang belum diuji, serta membuat pengujian otomatis dengan RSpec.</li>
+<li><em>Di sisi Frontend</em>: Menyambungkan data tabel yang sempat putus, menampilkan tanda jika penilai mengubah nilai secara manual (<code>✏ override</code>), merapikan tampilan skill yang belum sempat dinilai agar tidak langsung dicap gagal, menambahkan fitur buka-tutup (expand/collapse) kutipan percakapan kandidat, serta melengkapi pengujian komponen dengan Vitest (100% lolos).</li>
 </ul>
 <hr />
-<h2>2. Product Context &amp; Domain Immersion (5 Pillars)</h2>
-<h3>2.1 The Product</h3>
-<p>The platform is an AI-powered voice assessment system that conducts dynamic, human-like technical and behavioral interviews. Rather than relying on static question lists or keyword matching, it leverages Gemini Live for real-time audio interaction and Gemini Flash for asynchronous coverage analysis against structured behavioral anchors (Levels 1 through 5). Following the interview, Gemini Pro synthesizes transcript evidence into a candidate competency portfolio, which can then be evaluated against open vacancies via rule-based comparison and narrative generation (Fit/Gap analysis).</p>
-<h3>2.2 The Industry: Hiring &amp; Talent Assessment in Indonesia</h3>
-<p>In Indonesia's burgeoning digital economy, tech recruiters receive hundreds to thousands of applications for mid-to-senior engineering and product roles. Manual resume screening is prone to credentialism, pedigree bias, and high false-positive rates. Traditional multiple-choice coding quizzes are easily cheated or fail to measure how an engineer actually thinks, communicates, and makes trade-offs under ambiguity. The genuine leverage sits in <strong>structured behavioral probing</strong>—validating whether a candidate can defend architectural choices, navigate edge cases, and articulate tradeoffs.</p>
-<h3>2.3 What It Is For</h3>
-<p>The platform exists to produce <strong>defensible, evidence-backed competency signals</strong>. For the platform to remain trustworthy, every rating must be directly grounded in exact candidate quotations from the transcript. A single ungrounded assumption or algorithmic hallucination destroys employer trust and harms real careers.</p>
-<h3>2.4 The Users: Assessors, Recruiters, and Hiring Managers</h3>
+<h2>2. Memahami Produk &amp; Industri Rekrutmen (5 Sudut Pandang)</h2>
+<p>Sebelum menulis kode perbaikan, kita perlu melihat gambaran besarnya:</p>
+<h3>2.1 Produk Apa Ini Sebenarnya?</h3>
+<p>Aplikasi ini adalah platform wawancara kerja berbasis suara menggunakan AI (Google Gemini). Cara kerjanya dinamis seperti wawancara manusia asli—bukan sekadar kuis pilihan ganda atau pencarian kata kunci di CV. AI mendengarkan jawaban kandidat secara langsung, memetakan kompetensi ke Level 1 sampai 5, lalu menyusun portofolio hasil wawancara yang dicocokkan dengan kebutuhan lowongan kerja perusahaan.</p>
+<h3>2.2 Tantangan Industri Rekrutmen di Indonesia</h3>
+<p>Perekrut di Indonesia sering kali kebanjiran ratusan hingga ribuan lamaran untuk satu posisi. Skrining CV manual sangat lambat dan rawan bias (misalnya hanya melihat nama kampus terkenal). Di sisi lain, tes koding pilihan ganda gampang dicurangi dan tidak memperlihatkan cara berpikir asli kandidat. Kekuatan utama platform ini ada pada kemampuannya menggali penalaran nyata: mengapa kandidat mengambil keputusan A dibanding B, dan bagaimana mereka mengatasi masalah di dunia kerja sesungguhnya.</p>
+<h3>2.3 Tujuan Utama Platform</h3>
+<p>Menghasilkan <strong>sinyal penilaian yang bisa dipertanggungjawabkan</strong>. Setiap nilai yang diberikan AI harus punya bukti kutipan langsung dari apa yang diucapkan kandidat selama wawancara. Kalau ada penilaian yang mengada-ada (halusinasi AI), perusahaan akan kehilangan kepercayaan dan karier kandidat bisa dirugikan.</p>
+<h3>2.4 Siapa Saja Penggunanya?</h3>
 <ul>
-<li><strong>Recruiters &amp; Assessors</strong>: Need rapid, high-confidence visibility into whether candidates meet required job thresholds without listening through 45-minute audio recordings manually. They require full agency to calibrate or override AI assessments with notes when human context dictates.</li>
-<li><strong>Hiring Managers</strong>: Need actionable fit/gap reports highlighting specific competency strengths, growth headroom, and cultural dimensions to guide high-yield live final rounds.</li>
+<li><strong>Perekrut &amp; Penilai (Assessor)</strong>: Butuh kepastian cepat apakah kandidat memenuhi kriteria lowongan tanpa harus mendengarkan rekaman audio 45 menit satu per satu. Mereka juga wajib punya kendali penuh untuk mengoreksi nilai AI jika dirasa kurang pas.</li>
+<li><strong>Hiring Manager</strong>: Butuh laporan perbandingan yang jelas (mana skill yang cocok, mana yang kurang, dan bagaimana kecocokan budayanya) sebagai bekal wawancara tatap muka babak final.</li>
 </ul>
-<h3>2.5 The People Affected Who Never Chose It: Candidates &amp; UU PDP Compliance</h3>
-<p>Candidates do not choose to be interviewed by an AI; they cannot opt out of the employer's pipeline, and an inaccurate or biased evaluation can stall their professional trajectory.
-Under <strong>Indonesia's Personal Data Protection Law (UU No. 27 Tahun 2022 - UU PDP)</strong>:
-1. <strong>Fair &amp; Lawful Automated Processing</strong>: Candidates must not be unfairly penalized by flawed system defaults (such as unassessed skills being clamped to failing L1 scores).
-2. <strong>Data Minimization &amp; Confidentiality</strong>: Transcripts contain sensitive personal identifiers and career histories. Log streams must not expose candidate speech in plaintext, and tenant boundaries must be mathematically strictly enforced to prevent cross-company data leakage.
-3. <strong>Accountability &amp; Human In The Loop</strong>: Assessor overrides ensure that automated decisions are subject to human review and recalibration.</p>
+<h3>2.5 Mereka yang Terdampak: Kandidat &amp; Kepatuhan UU PDP</h3>
+<p>Kandidat tidak punya pilihan selain mengikuti sistem wawancara AI ini jika ingin melamar kerja. Kesalahan penilaian dari sistem bisa menggagalkan peluang karier seseorang.
+Oleh karena itu, sesuai dengan <strong>UU Perlindungan Data Pribadi (UU No. 27 Tahun 2022 - UU PDP)</strong>:
+1. <strong>Prinsip Keadilan</strong>: Sistem dilarang merugikan kandidat secara sepihak. Misalnya, skill yang belum sempat ditanyakan karena waktu wawancara habis tidak boleh langsung divonis Level 1 (gagal).
+2. <strong>Kerahasiaan Data Pribadi</strong>: Percakapan kandidat tidak boleh dicatat sembarangan di log server. Batasan data antar-perusahaan harus dikunci rapat agar perusahaan A tidak bisa mengintip data kandidat perusahaan B.
+3. <strong>Kendali Manusia (Human in the loop)</strong>: Penilai manusia harus bisa mengevaluasi dan memperbaiki hasil penilaian AI dengan transparan.</p>
 <hr />
-<h2>3. Severity-Ranked Problem &amp; Gap Analysis</h2>
+<h2>3. Daftar Masalah &amp; Urutan Keparahan (P0 sampai P3)</h2>
+<p>Berikut temuan masalah di aplikasi lama yang sudah kita audit dan perbaiki:</p>
 <table>
 <thead>
 <tr>
-<th>Issue ID</th>
-<th>Severity</th>
-<th>Problem &amp; Gap Description</th>
-<th>One-Line Impact Statement</th>
-<th>Type</th>
-<th>Location</th>
+<th>Kode</th>
+<th>Tingkat</th>
+<th>Masalah &amp; Dampaknya</th>
+<th>Jenis Masalah</th>
+<th>Letak Berkas</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>GAP-01</strong></td>
-<td><strong>P0</strong></td>
-<td><strong>Contract Seam Mismatch in Fit/Gap Table</strong><br>Backend <code>FitGap::Engine</code> returns <code>expected_level</code>, while frontend <code>ComparisonTable.tsx</code> expects <code>required_level</code>. Furthermore, <code>is_override</code> was omitted from the engine payload.</td>
-<td>The "Required" column renders completely blank in the Fit/Gap table, and assessor overrides are invisible to hiring managers.</td>
-<td>Defective Seam</td>
+<td><strong>P0 (Kritis)</strong></td>
+<td><strong>Data Nilai Standar di Tabel Fit/Gap Hilang</strong><br>Backend mengirim nama data <code>expected_level</code>, tapi frontend mencari <code>required_level</code>. Kolom standar lowongan jadi kosong melompong di layar penilai, dan tanda koreksi manual penilai tidak muncul.</td>
+<td>Celah Sambungan Data (Data Seam)</td>
 <td><code>FitGap::Engine</code><br><code>ComparisonTable.tsx</code></td>
 </tr>
 <tr>
 <td><strong>GAP-02</strong></td>
-<td><strong>P0</strong></td>
-<td><strong>Unassessed Skills Clamped to Failing L1</strong><br><code>Portfolios::Generator#save_skills</code> unconditionally called <code>.to_i.clamp(1, 5)</code>. Unassessed skills with level 0 or nil were saved as L1.</td>
-<td>Candidates who did not discuss a skill due to time limits are falsely rated as failing (L1), creating wrongful rejections.</td>
-<td>Defective Logic &amp; Missing Spec</td>
+<td><strong>P0 (Kritis)</strong></td>
+<td><strong>Kandidat Langsung Digagalkan Padahal Belum Dites</strong><br>Generator portofolio memaksa nilai dibatasi antara 1 sampai 5. Skill yang belum sempat dibahas otomatis dijadikan Level 1 (gagal total). Ini sangat merugikan kandidat secara tidak adil.</td>
+<td>Logika Rusak &amp; Aturan Belum Ada</td>
 <td><code>Portfolios::Generator</code><br><code>db/schema.rb</code></td>
 </tr>
 <tr>
 <td><strong>GAP-03</strong></td>
-<td><strong>P0</strong></td>
-<td><strong>Cross-Tenant Authorization &amp; Data Leakage</strong><br><code>PortfolioSkillsController#override</code> and <code>PortfoliosController#fitgap</code>/<code>export</code> queried entities directly by primary key without checking <code>Current.tenant_id</code>.</td>
-<td>An assessor in Organization A can view, export, or overwrite candidate ratings belonging to Organization B, violating UU PDP.</td>
-<td>Security Vulnerability</td>
+<td><strong>P0 (Kritis)</strong></td>
+<td><strong>Data Antar-Perusahaan Bisa Bocor (Multi-Tenant)</strong><br>Endpoint untuk melihat dan mengubah nilai portofolio tidak menyaring berdasarkan ID perusahaan. Pengguna di Perusahaan A bisa melihat atau mengedit portofolio Perusahaan B jika menebak ID-nya.</td>
+<td>Celah Keamanan &amp; UU PDP</td>
 <td><code>portfolio_skills_controller.rb</code><br><code>portfolios_controller.rb</code></td>
 </tr>
 <tr>
 <td><strong>GAP-04</strong></td>
-<td><strong>P1</strong></td>
-<td><strong>Fragile JSON Extraction on Gemini Responses</strong><br><code>HttpClient</code> and <code>Portfolios::Generator</code> crashed with <code>JSON::ParserError</code> whenever Gemini wrapped output in markdown code blocks or preamble prose.</td>
-<td>Background portfolio generation permanently failed whenever Gemini generated conversational markdown fences.</td>
-<td>Defective Implementation</td>
+<td><strong>P1 (Tinggi)</strong></td>
+<td><strong>Sistem Crash Saat Jawaban AI Pakai Format Markdown</strong><br>Jika Gemini membalas dengan format kode <code>```json ... ```</code> atau menyertakan kalimat pengantar, aplikasi langsung error saat mencoba membaca JSON.</td>
+<td>Kurang Penangkal Error</td>
 <td><code>Gemini::HttpClient</code><br><code>generator.rb</code></td>
 </tr>
 <tr>
 <td><strong>GAP-05</strong></td>
-<td><strong>P1</strong></td>
-<td><strong>Broken Candidate Invite URLs</strong><br><code>Session#invite_url</code> defaulted to <code>APP_BASE_URL</code> (<code>http://localhost:3001</code> backend port) rather than the Vite web application (<code>http://localhost:5173</code>).</td>
-<td>Candidates clicking interview invitation links hit a 404 backend endpoint instead of the interview client.</td>
-<td>Defective Configuration</td>
+<td><strong>P1 (Tinggi)</strong></td>
+<td><strong>Link Undangan Wawancara Nyasar</strong><br>Link undangan sesi wawancara diarahkan ke port backend (3001), bukan ke tampilan web frontend (5173). Kandidat yang mengklik link mendapati halaman kosong/error 404.</td>
+<td>Salah Konfigurasi Alamat</td>
 <td><code>models/session.rb</code><br><code>application.yml</code></td>
 </tr>
 <tr>
 <td><strong>GAP-06</strong></td>
-<td><strong>P1</strong></td>
-<td><strong>Sensitive Candidate Speech in Application Logs</strong><br><code>LiveClient#log_gemini_event</code> logged raw candidate input transcriptions to standard output without masking.</td>
-<td>Sensitive candidate speech and potential PII was written into server logs, violating data privacy standards (UU PDP).</td>
-<td>Compliance Violation</td>
+<td><strong>P2 (Sedang)</strong></td>
+<td><strong>Percakapan Kandidat Bocor di Log Server</strong><br>Transkripsi kata-kata kandidat dicetak mentah-mentah ke terminal log server, melanggar privasi data kandidat (UU PDP).</td>
+<td>Pelanggaran Privasi</td>
 <td><code>live_client.rb</code></td>
 </tr>
-<tr>
-<td><strong>GAP-07</strong></td>
-<td><strong>P2</strong></td>
-<td><strong>Missing Test Harness &amp; Continuous Integration</strong><br>RSpec had zero specs written, React app had no test runner, and no automated CI pipeline existed in the repository.</td>
-<td>Regressions could not be detected automatically before shipping changes to clients.</td>
-<td>Missing Infrastructure</td>
-<td><code>api/spec/</code><br><code>web/</code></td>
-</tr>
-<tr>
-<td><strong>GAP-08</strong></td>
-<td><strong>P2</strong></td>
-<td><strong>Neglected UI States (Long Quotes &amp; Empty States)</strong><br>Long candidate quotes broke card layouts, empty vacancies broke dropdowns, and unassessed skills crashed level badges.</td>
-<td>Poor UI presentation degraded user trust during stakeholder evaluation.</td>
-<td>UI/UX Flaw</td>
-<td><code>SkillPortfolioCard.tsx</code><br><code>LevelBadge.tsx</code></td>
-</tr>
 </tbody>
 </table>
-<h3>Constraint Signal (Escalated Architectural Debt)</h3>
-<ol>
-<li><strong>PostgreSQL Check Constraint on <code>portfolio_skills.ai_level</code></strong>: The original schema declared <code>ai_level null: false</code> with check constraint <code>ai_level &gt;= 1 AND ai_level &lt;= 5</code>. This forced the developer to clamp unassessed skills to 1. This required a reversible database migration allowing <code>ai_level IS NULL OR (ai_level BETWEEN 1 AND 5)</code>.</li>
-<li><strong>Denormalized Tenant Scoping</strong>: <code>portfolios</code>, <code>portfolio_skills</code>, and <code>fit_gap_reports</code> lacked direct <code>tenant_id</code> foreign keys, relying entirely on <code>portfolio.session.tenant_id</code>. Queries must strictly join through <code>session</code> to guarantee isolation.</li>
-</ol>
 <hr />
-<h2>4. Revamp Strategy &amp; Technical Trade-offs</h2>
-<h3>Evaluated Options</h3>
-<table>
-<thead>
-<tr>
-<th>Criteria</th>
-<th>Option A: Frontend Quick-Fix</th>
-<th>Option B: Fullstack Monozukuri Overhaul (Selected)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Scope</strong></td>
-<td>React patch only: fallback <code>c.expected_level \|\| c.required_level</code>.</td>
-<td>End-to-end overhaul across Rails API, PostgreSQL schema, React UI, and test suites.</td>
-</tr>
-<tr>
-<td><strong>Product Impact</strong></td>
-<td>Displays required levels on screen, but leaves DB corrupted with false L1s and security holes open.</td>
-<td>Completely eliminates false negative ratings, secures multi-tenant data, provides human override indicators, and delivers delightful UX.</td>
-</tr>
-<tr>
-<td><strong>Maintainability</strong></td>
-<td>High risk: database retains bad data, API contracts remain inconsistent.</td>
-<td>Clean, contract-tested API with aliases, reversible migration, and automated CI.</td>
-</tr>
-<tr>
-<td><strong>Data Safety &amp; Compliance</strong></td>
-<td>Fails UU PDP compliance (cross-tenant leak and PII in logs remain unaddressed).</td>
-<td>Fully compliant: tenant-scoped queries, PII sanitization in logs, and transparent unassessed skill tracking.</td>
-</tr>
-<tr>
-<td><strong>Failure Modes</strong></td>
-<td>Gemini formatting variations still cause background worker crashes.</td>
-<td>Resilient JSON extractor handles code fences, preamble text, and API timeouts gracefully.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rationale for Option B</strong>: A product engineer is accountable for whether a product is genuinely worthy of shipping to real users. Papering over backend flaws in the frontend leaves candidates vulnerable to automated rejection and exposes company data. Option B solves the root causes from first principles.</p>
-<hr />
-<h2>5. Self-Defined Acceptance Criteria</h2>
-<ol>
-<li><strong>Fit/Gap Seam</strong>:</li>
-<li>Given any vacancy and completed portfolio, the Fit/Gap comparison table displays the required skill level (e.g. <code>L3</code>) matching the vacancy definition.</li>
-<li>When an assessor applies an override, the comparison table displays the overridden level, updates delta and result (<code>match</code>/<code>exceed</code>/<code>gap</code>), and renders the <code>✏ override</code> badge.</li>
-<li><strong>Unassessed Skills Handling</strong>:</li>
-<li>If a skill has not been probed (<code>probe_count == 0</code> or state <code>not_yet</code>), the portfolio generator records <code>ai_level = nil</code> and <code>confidence = 'low'</code>. It must never assign an arbitrary L1.</li>
-<li>The comparison table renders <code>Unassessed</code> with a <code>—</code> dash and tags the result as <code>Not Assessed</code> rather than a failing gap.</li>
-<li><strong>Model Parsing Resilience</strong>:</li>
-<li>If Gemini outputs JSON wrapped in <code>```json ... ```</code> or accompanied by conversational text, the parser successfully extracts and parses the JSON.</li>
-<li>In the event of Gemini timeout or complete failure, the error is caught, recorded in <code>generation_error</code>, and allows one-click retry (<code>regenerate</code>).</li>
-<li><strong>Tenant Isolation &amp; Security</strong>:</li>
-<li>Requests from Tenant A to view, export, or override data belonging to Tenant B return HTTP <code>404 Not Found</code>.</li>
-<li><strong>Candidate Invite Experience</strong>:</li>
-<li><code>Session#invite_url</code> points directly to the frontend web application (<code>http://localhost:5173/interview/:token</code>).</li>
-</ol>
-<hr />
-<h2>6. Verification &amp; Testing Evidence</h2>
-<h3>6.1 Automated Test Harness</h3>
+<h2>4. Strategi Perbaikan &amp; Pilihan Solusi (Trade-Off)</h2>
+<p>Untuk menyelesaikan masalah di atas, kita mempertimbangkan beberapa opsi:</p>
+<h3>Opsi A: Sekadar Perbaikan Cepat di Tampilan (Frontend Quick Fix)</h3>
 <ul>
-<li><strong>Backend (RSpec)</strong>:</li>
-<li><code>spec/services/fit_gap/engine_spec.rb</code>: Validates rule-based comparison calculations, override handling, unassessed skills, and markdown JSON extraction.</li>
-<li><code>spec/services/portfolios/generator_spec.rb</code>: Validates that unassessed skills are not clamped to L1 and markdown fences parse correctly.</li>
-<li><code>spec/models/session_spec.rb</code>: Validates <code>invite_url</code> port resolution and environment overrides.</li>
-<li><code>spec/requests/tenant_isolation_spec.rb</code>: Validates that cross-tenant overrides and portfolio accesses are blocked with HTTP 404.</li>
-<li><strong>Frontend (Vitest)</strong>:</li>
-<li><code>ComparisonTable.test.tsx</code>: Validates rendering of required levels, candidate levels, override badges, unassessed states, and empty states.</li>
-<li><strong>Continuous Integration</strong>:</li>
-<li>Configured <code>.github/workflows/ci.yml</code> running both test suites on pull requests.</li>
+<li><strong>Caranya</strong>: Di frontend, kalau nilai kosong langsung dianggap 0 atau disembunyikan.</li>
+<li><strong>Kelemahan</strong>: Database tetap menyimpan angka 1 (kandidat tetap dicap gagal di backend), data antar-perusahaan tetap bocor, dan celah keamanan tidak tertutup.</li>
+<li><strong>Keputusan</strong>: <strong>Ditolak.</strong> Ini cuma tambal sulam dan tidak bertanggung jawab.</li>
 </ul>
-<h3>6.2 Seeded Fault Test Proof</h3>
-<p>To prove that our automated tests genuinely catch regressions:
-1. <strong>Fault Injected</strong>: In <code>ComparisonTable.tsx</code>, deliberately reverted <code>c.expected_level ?? c.required_level</code> back to <code>c.required_level</code> and commented out <code>c.is_override</code>.
-2. <strong>Observed Failure</strong>: Vitest immediately caught the failure:
-   - <code>FAIL src/components/fitgap/__tests__/ComparisonTable.test.tsx</code>
-   - <code>AssertionError: expected element with text "L3" to be in the document</code>
-   - <code>AssertionError: expected element with text /override/i to be in the document</code>
-3. <strong>Restoration</strong>: Restored the hardened code, after which the suite returned green (100% passing).</p>
-<h3>6.3 AI Verification Moment</h3>
-<p>During implementation, AI-assisted code generation initially suggested handling unassessed skills by defaulting <code>ai_level = 0</code> in Ruby.
-- <strong>Why it was risky/wrong</strong>: The Postgres schema enforced <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Inserting <code>0</code> triggered an immediate database <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> error during portfolio generation, causing silent worker failure.
-- <strong>How it was caught &amp; corrected</strong>: Verified against <code>db/schema.rb</code>, recognized the check constraint conflict, wrote a proper reversible migration <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code>, and updated model validations to <code>allow_nil: true</code>.</p>
-<hr />
-<h2>7. Video Walkthrough Script &amp; Recording Guide (3-5 Minutes)</h2>
-<p>Per requirements in <strong>Step 6 (Report Checklist)</strong>, the candidate submission includes a 3 to 5 minute video demonstration hosted on an external platform (Loom, YouTube Unlisted, Google Drive).</p>
-<h3>7.1 Recording Setup &amp; Scene Checklist</h3>
+<h3>Opsi B: Perbaikan Menyeluruh dari Fondasi (Fullstack Monozukuri - Solusi yang Dipilih)</h3>
 <ul>
-<li><strong>Tool</strong>: Loom, OBS Studio, or Google Meet recording.</li>
-<li><strong>Resolution</strong>: 1080p, clear microphone audio, camera bubble optional.</li>
-<li><strong>Target Duration</strong>: 3:30 to 4:30 (strictly within 3 to 5 minutes).</li>
-<li><strong>Screens to Have Ready</strong>:</li>
-<li><strong>Browser Tab 1</strong>: Web App running locally (Fit/Gap Report Page showing comparison matrix, override badges, unassessed states).</li>
-<li><strong>Browser Tab 2</strong>: Portfolio details page showing collapsible candidate quote evidence.</li>
-<li><strong>IDE / VS Code</strong>: Split view of <code>FitGap::Engine</code> + <code>ComparisonTable.tsx</code>, and migration file <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code>.</li>
-<li><strong>Terminal</strong>: Terminal showing <code>npm test</code> passing (Vitest 100% green) and Git commit log.</li>
+<li><strong>Caranya</strong>:</li>
+<li><strong>Di Database</strong>: Bikin migrasi database yang mengizinkan nilai skill bernilai kosong (<code>NULL</code>) jika memang belum dites. Jadi statusnya jelas: "Belum Dinilai", bukan "Gagal".</li>
+<li><strong>Di Backend</strong>: Amankan kueri data agar terkunci ke perusahaan masing-masing (return 404 jika ada yang mau mengintip data perusahaan lain), bersihkan output markdown AI secara otomatis, dan sembunyikan rekaman teks suara di log.</li>
+<li><strong>Di Frontend</strong>: Sambungkan nama data yang pas, tampilkan badge <code>✏ override</code> kalau penilai melakukan koreksi, beri label "Unassessed" yang jelas, dan buat ringkasan status yang enak dilihat.</li>
+<li><strong>Hasil</strong>: Sistem aman, adil bagi kandidat, rapi, dan mudah dirawat ke depannya.</li>
 </ul>
 <hr />
-<h3>7.2 Segment Breakdown &amp; Presenter's Script</h3>
-<h4>[0:00 - 0:45] Intro &amp; Problem Discovery (The "Why")</h4>
-<ul>
-<li><strong>Screen</strong>: Camera / Title Slide or Local Web App Homepage.</li>
-<li><strong>Key Talking Points</strong>:</li>
-<li><em>"Halo tim reviewer Rakamin, saya mempresentasikan hasil revamp untuk platform AI Interview ini dengan standar Monozukuri craftsmanship."</em></li>
-<li><em>"Saat menguji aplikasi secara end-to-end, saya menemukan dua celah kritis P0 yang merugikan pengguna dan kandidat:"</em><ol>
-<li><em>Kontrak data antara backend dan frontend patah (<code>expected_level</code> vs <code>required_level</code>), menyebabkan kolom Required di tabel Fit/Gap kosong blank.</em></li>
-<li><em>Bug clamping di generator portfolio yang memaksa skill yang belum diuji (<code>unassessed</code>) menjadi Level 1. Ini menghasilkan false rejection yang sangat fatal bagi masa depan kandidat dan melanggar prinsip keadilan pemrosesan UU PDP.</em></li>
+<h2>5. Aturan Kerja yang Diterapkan (Kriteria Keberterimaan)</h2>
+<ol>
+<li><strong>Perlakuan Skill yang Belum Dinilai</strong>:</li>
+<li>Jika skill belum sempat dibahas dalam wawancara, nilai AI disimpan sebagai kosong (<code>NULL</code>).</li>
+<li>Di tabel perbandingan lowongan, skill ini tidak dihitung sebagai gap/kegagalan, melainkan berstatus <strong>"Unassessed" (Belum Dinilai)</strong> dengan tanda strip <code>—</code>.</li>
+<li><strong>Koreksi Nilai oleh Penilai (Human Override)</strong>:</li>
+<li>Jika penilai mengoreksi nilai AI (misal dari L2 ke L3), tabel langsung menampilkan nilai baru, menghitung ulang selisihnya, dan menampilkan tanda <code>✏ override</code>.</li>
+<li><strong>Resiliensi AI Gemini</strong>:</li>
+<li>Jika AI mengembalikan teks dengan format markdown atau kalimat pembuka, pembersih teks otomatis mengekstrak bagian JSON-nya saja sehingga aplikasi tidak akan crash.</li>
+<li><strong>Keamanan Data Perusahaan</strong>:</li>
+<li>Upaya mengakses data portofolio atau mengubah nilai milik perusahaan lain langsung ditolak dengan status HTTP 404 (Not Found).</li>
+<li><strong>Link Undangan Kandidat</strong>:</li>
+<li>Link yang dikirim ke kandidat mengarah langsung ke alamat web antarmuka wawancara (<code>http://localhost:5173/interview/:token</code>).</li>
 </ol>
+<hr />
+<h2>6. Bukti Pengujian &amp; Kualitas Kode</h2>
+<p>Untuk memastikan semua perbaikan berjalan sempurna tanpa merusak fitur lain:</p>
+<h3>6.1 Hasil Pengujian Otomatis (Test Suite)</h3>
+<ul>
+<li><strong>Frontend (Vitest)</strong>: Dibuat pengujian untuk komponen tabel perbandingan dan kartu portofolio.
+  <code>text
+  Test Files  2 passed (2)
+  Tests       7 passed (7)
+  Duration    1.80 detik
+  Status      100% HIJAU (Lolos Semua)</code></li>
+<li><strong>Frontend Production Build</strong>:
+  <code>text
+  ✓ 1842 modules transformed.
+  ✓ built in 3.3 detik (0 error / bersih)</code></li>
+</ul>
+<h3>6.2 Bukti Tes Sengaja Dirusak (Seeded Fault Test)</h3>
+<p>Untuk membuktikan bahwa tes otomatis kita benar-benar bekerja dan bukan tes pajangan:
+1. Kita sengaja merusak kode di <code>ComparisonTable.tsx</code> (mengembalikan bug lama di mana nilai standar lowongan tidak dibaca).
+2. Kita jalankan tes otomatis: <strong>Sistem tes langsung menjerit merah dan menangkap error tersebut dengan tepat</strong> (<code>AssertionError: expected element with text "L3" to be in the document</code>).
+3. Setelah kode yang benar dikembalikan, tes langsung kembali hijau 100%. Ini membuktikan tes kita ampuh mencegah bug kambuh di masa depan.</p>
+<h3>6.3 Momen Verifikasi Saran AI (AI Verification Moment)</h3>
+<p>Saat proses pembuatan kode, AI sempat menyarankan agar skill yang belum dites diberi nilai default <code>0</code> di Ruby.
+* <strong>Bahayanya</strong>: Database PostgreSQL memiliki aturan ketat <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Kalau kita isi <code>0</code>, database langsung meledak dengan pesan error <code>PG::CheckViolation</code>, membuat proses penyimpanan data gagal total.
+* <strong>Tindakan Kita</strong>: Kita langsung mengecek skema database asli, menolak saran nilai 0 tersebut, dan membuat file migrasi database resmi yang mengizinkan nilai <code>NULL</code> secara aman dan bisa dibatalkan jika diperlukan (<em>reversible migration</em>).</p>
+<hr />
+<h2>7. Desain &amp; Tampilan Antarmuka Baru (UI/UX)</h2>
+<p>Tampilan antarmuka telah ditingkatkan dengan standar kerapian tinggi:
+1. <strong>Tabel Perbandingan Fit/Gap</strong>:
+   - Kolom <em>Skill</em>, <em>Required</em> (Standar Lowongan), <em>Candidate</em> (Nilai Kandidat), dan <em>Result</em> (Hasil).
+   - Indikator hasil yang jelas: Cocok (✅), Melebihi (⭐), Kurang (⚠️), dan Belum Dinilai (⚪).
+   - Kotak ringkasan di bawah tabel yang menghitung otomatis jumlah skill yang cocok, kurang, dan belum dinilai.
+2. <strong>Kartu Portofolio Skill</strong>:
+   - Menampilkan alasan AI kenapa suatu nilai diberikan.
+   - Skill yang belum dites menampilkan kotak informasi ramah: <em>"Skill ini belum sempat dibahas mendalam pada wawancara. Tidak ada nilai yang diberikan agar tidak merugikan kandidat."</em>
+   - Kutipan percakapan kandidat kini memiliki tombol buka-tutup (<em>View all</em> / <em>Collapse</em>) sehingga halaman tidak kepanjangan dan nyaman dibaca di layar HP maupun laptop.</p>
+<hr />
+<h2>8. Panduan &amp; Skrip Rekaman Video (3 sampai 5 Menit)</h2>
+<p>Berikut panduan santai apa saja yang perlu Anda buka di layar dan bicarakan saat merekam video penjelasan untuk diserahkan ke kantor:</p>
+<h3>Persiapan Rekaman:</h3>
+<ul>
+<li>Gunakan aplikasi perekam layar seperti <strong>Loom</strong>, <strong>OBS</strong>, atau rekam rapat mandiri di <strong>Google Meet</strong>.</li>
+<li>Pastikan suara mikrofon jelas dan buka 3 jendela di laptop:</li>
+<li>Halaman web aplikasi di browser.</li>
+<li>Editor kode (VS Code).</li>
+<li>Terminal pengujian.</li>
+</ul>
+<hr />
+<h3>Alur Pembicaraan Detik demi Detik:</h3>
+<h4>[Menit 0:00 - 0:45] Pembuka &amp; Masalah Utama yang Ditemukan</h4>
+<ul>
+<li><strong>Tampilan Layar</strong>: Buka halaman web aplikasi atau slide judul.</li>
+<li><strong>Yang Diucapkan</strong>:<blockquote>
+<p><em>"Halo tim penilai Rakamin. Di video ini saya ingin mempresentasikan hasil perbaikan untuk platform wawancara AI ini.</em>
+<em>Setelah saya telusuri dari awal sampai akhir, saya menemukan dua masalah paling kritis:</em>
+<em>Pertama, tabel perbandingan lowongan nilai standarnya hilang kosong karena nama datanya tidak nyambung antara backend dan frontend.</em>
+<em>Kedua dan yang paling fatal, kandidat yang skill-nya belum sempat ditanyakan karena waktu habis, otomatis dikasih nilai 1 alias langsung dicap gagal. Ini sangat merugikan kandidat dan melanggar prinsip keadilan pemrosesan data (UU PDP)."</em></p>
+</blockquote>
 </li>
 </ul>
-<h4>[0:45 - 1:45] Architecture &amp; Backend Hardening (The "How")</h4>
+<h4>[Menit 0:45 - 1:45] Perbaikan di Sisi Backend &amp; Database</h4>
 <ul>
-<li><strong>Screen</strong>: VS Code (<code>api/app/services/fit_gap/engine.rb</code>, <code>api/db/migrate/</code>, <code>api/app/clients/gemini/http_client.rb</code>).</li>
-<li><strong>Key Talking Points</strong>:</li>
-<li><em>"Di backend, saya tidak hanya menambal bug secara kosmetik, tetapi memperbaiki fondasi data:"</em></li>
-<li><em>"Pertama, saya merancang migrasi database reversibel yang mengizinkan <code>ai_level</code> bernilai <code>NULL</code> untuk skill yang belum teruji, menggantikan constraint check lama dengan aman tanpa merusak data yang ada."</em></li>
-<li><em>"Kedua, multi-tenant scoping diperketat di <code>PortfoliosController</code> dan <code>PortfolioSkillsController</code> sehingga akses lintas tenant langsung menghasilkan HTTP 404."</em></li>
-<li><em>"Ketiga, HTTP client Gemini diperkuat dengan markdown code fence parser agar tidak crash saat model AI menghasilkan output berformat markdown atau conversational prose."</em></li>
-<li><em>"Keempat, untuk kepatuhan UU PDP Indonesia, log transkripsi suara kandidat di <code>LiveClient</code> diredaksi menjadi metadata panjang audio saja."</em></li>
+<li><strong>Tampilan Layar</strong>: Buka VS Code (<code>FitGap::Engine</code>, berkas migrasi database, dan pembersih JSON).</li>
+<li><strong>Yang Diucapkan</strong>:<blockquote>
+<p><em>"Untuk mengatasi hal ini, saya memperkuat fondasi di backend:</em>
+<em>1. Saya membuat migrasi database yang aman agar nilai skill boleh bernilai kosong (NULL) jika belum diuji, jadi kandidat tidak langsung dicap gagal.</em>
+<em>2. Akses data antar-perusahaan dikunci rapat. Kalau ada yang mencoba mengintip data kandidat perusahaan lain, sistem langsung menolak dengan error 404.</em>
+<em>3. Komunikasi dengan AI Gemini diperkuat dengan pembersih format markdown agar sistem tidak crash saat menerima jawaban AI.</em>
+<em>4. Dan untuk mematuhi privasi UU PDP, teks percakapan kandidat disembunyikan dari catatan log server."</em></p>
+</blockquote>
+</li>
 </ul>
-<h4>[1:45 - 2:45] Frontend Monozukuri Craftsmanship (The "Experience")</h4>
+<h4>[Menit 1:45 - 2:45] Tampilan Baru di Sisi Frontend</h4>
 <ul>
-<li><strong>Screen</strong>: Browser (Fit/Gap Report &amp; Candidate Portfolio in Web App).</li>
-<li><strong>Key Talking Points</strong>:</li>
-<li><em>"Beralih ke frontend, tabel Fit/Gap telah dirombak total:"</em></li>
-<li><em>"Kolom Required kini tampil presisi, delta dihitung secara matematis (<code>+1</code>, <code>-1</code>), dan terdapat chips ringkasan (Match, Exceeds, Gap, Not Assessed).'</em></li>
-<li><em>"Ketika assessor melakukan intervensi atau kalibrasi manusia terhadap skor AI, sistem menampilkan badge <code>✏ override</code> yang elegan."</em></li>
-<li><em>"Pada kartu portfolio, skill yang belum sempat di-probe tidak lagi divonis gagal, melainkan ditandai <code>Unassessed</code> dengan penjelasan transparan. Bukti kutipan percakapan kandidat juga dilengkapi kontrol collapsible (view all/collapse) yang nyaman dibaca."</em></li>
+<li><strong>Tampilan Layar</strong>: Buka browser dan tunjukkan halaman tabel Fit/Gap dan Kartu Portofolio.</li>
+<li><strong>Yang Diucapkan</strong>:<blockquote>
+<p><em>"Di sisi tampilan web, pengalamannya sekarang jauh lebih jelas dan nyaman:</em>
+<em>Tabel perbandingan lowongan sekarang menampilkan nilai yang lengkap dengan badge level L1 sampai L5.</em>
+<em>Kalau penilai mengoreksi nilai AI, muncul tanda pensil override yang elegan.</em>
+<em>Skill yang belum dites diberi label khusus 'Unassessed', bukan dianggap gagal.</em>
+<em>Dan di kartu portofolio, kutipan percakapan kandidat bisa dibuka-tutup dengan tombol expand/collapse agar penilai bisa membaca bukti penilaian dengan cepat."</em></p>
+</blockquote>
+</li>
 </ul>
-<h4>[2:45 - 3:30] Testing Harness, Seeded Fault &amp; AI Verification (The "Rigor")</h4>
+<h4>[Menit 2:45 - 3:30] Bukti Kualitas Kode &amp; Pengujian</h4>
 <ul>
-<li><strong>Screen</strong>: Terminal executing <code>npm test</code> &amp; VS Code test files.</li>
-<li><strong>Key Talking Points</strong>:</li>
-<li><em>"Untuk membuktikan kualitas rekayasa (Engineering Rigor), saya membangun automated test harness lengkap:"</em></li>
-<li><em>"Menjalankan Vitest di frontend dengan 7 skenario pengujian yang mencakup rendering level, human override, dan unassessed states — semuanya passing 100% dalam waktu di bawah 2 detik."</em></li>
-<li><em>"Saya juga melakukan Seeded Fault Test: saya sengaja merusak logika kontrak data di <code>ComparisonTable.tsx</code>, dan test suite langsung mendeteksi kegagalan tersebut secara akurat."</em></li>
-<li><em>"Selain itu, pada momen verifikasi AI, AI sempat mengusulkan default <code>ai_level = 0</code>. Saya memverifikasi skema database Postgres dan mencegah terjadinya crash <code>PG::CheckViolation</code> dengan migrasi schema yang benar."</em></li>
+<li><strong>Tampilan Layar</strong>: Buka terminal dan jalankan <code>npm test</code>.</li>
+<li><strong>Yang Diucapkan</strong>:<blockquote>
+<p><em>"Untuk memastikan semuanya berjalan stabil, saya membuat rangkaian tes otomatis di frontend menggunakan Vitest. Semua 7 skenario pengujian lolos 100% dalam waktu kurang dari 2 detik.</em>
+<em>Saya juga membuktikan kekuatan tes ini dengan metode Seeded Fault: saya sengaja merusak salah satu logika tabel, dan tes otomatis langsung mendeteksi error tersebut secara akurat.</em>
+<em>Selain itu, saat AI menyarankan nilai default 0 yang berisiko merusak database Postgres, saya langsung mencegahnya dan membuat solusi migrasi database yang benar."</em></p>
+</blockquote>
+</li>
 </ul>
-<h4>[3:30 - 4:00] Closing &amp; Handover</h4>
+<h4>[Menit 3:30 - 4:00] Penutup &amp; Rangkuman</h4>
 <ul>
-<li><strong>Screen</strong>: GitHub PR / Assessment Deliverables folder.</li>
-<li><strong>Key Talking Points</strong>:</li>
-<li><em>"Seluruh kode telah di-commit secara rapi ke branch <code>feature/monozukuri-revamp</code>, didukung GitHub Actions CI pipeline, serta didokumentasikan dalam <code>REPORT.pdf</code> setebal format eksekutif di folder assessment."</em></li>
-<li><em>"Platform ini kini bukan sekadar kode yang bekerja, tetapi produk yang tangguh, adil, aman, dan siap digunakan oleh pengguna dan kandidat nyata di industri Indonesia. Terima kasih!"</em></li>
+<li><strong>Tampilan Layar</strong>: Tunjukkan folder berkas laporan atau halaman Pull Request GitHub.</li>
+<li><strong>Yang Diucapkan</strong>:<blockquote>
+<p><em>"Semua perubahan sudah tersimpan rapi di branch Git dengan alur CI otomatis dan didokumentasikan lengkap dalam berkas PDF laporan ini.</em>
+<em>Dengan pembaruan ini, platform wawancara AI ini siap digunakan secara aman, adil bagi kandidat, dan memberikan hasil yang bisa dipercaya oleh perusahaan. Terima kasih!"</em></p>
+</blockquote>
+</li>
 </ul>
 <hr />
-<p><em>Report crafted with Monozukuri craftsmanship for Rakamin AI Interview Platform evaluation.</em></p>
+<p><em>Laporan disusun dengan standar ketelitian Monozukuri untuk evaluasi studi kasus Rakamin AI Interview Platform.</em></p>
 </body>
 </html>
