@@ -363,6 +363,16 @@
 <li>Status: <strong>2 Berkas Pengujian Lolos, 7 Skenario Uji Lolos (100% Green)</strong></li>
 <li>Durasi Eksekusi: <strong>1.80 detik</strong></li>
 <li>Cakupan: Verifikasi kalkulasi delta, penanganan kompetensi belum dinilai, visualisasi status kalibrasi manual, serta mekanisme ekspansi kutipan transkrip.</li>
+<li><strong>Pengujian Unit &amp; Integrasi Backend (RSpec)</strong>:
+  Telah dibangun rangkaian pengujian backend pada komponen kritis layanan dan keamanan:
+  <ul>
+    <li><code>spec/services/portfolios/generator_spec.rb</code> &mdash; 2 skenario: verifikasi NULL untuk kompetensi belum dinilai, ekstraksi JSON dari markdown.</li>
+    <li><code>spec/services/fit_gap/engine_spec.rb</code> &mdash; 3 skenario: perbandingan berbasis aturan dengan <code>required_level</code> alias, parsing JSON markdown, fallback narasi.</li>
+    <li><code>spec/requests/tenant_isolation_spec.rb</code> &mdash; 2 skenario: pemblokiran akses lintas-penyewa pada override dan fitgap.</li>
+    <li><code>spec/models/session_spec.rb</code> &mdash; 2 skenario: verifikasi <code>invite_url</code> mengarah ke frontend (<code>localhost:5173</code>).</li>
+    <li><strong>Total RSpec: 4 Berkas Pengujian, 9 Skenario Uji (100% Green)</strong></li>
+  </ul>
+</li>
 <li><strong>Kompilasi Produksi Frontend (<em>Production Build</em>)</strong>:</li>
 <li>Perintah: <code>npm run build</code> (<code>tsc &amp;&amp; vite build</code>)</li>
 <li>Status: <strong>1842 modul berhasil ditransformasi tanpa kesalahan (0 errors, waktu 3.3 detik)</strong>.</li>
@@ -379,8 +389,11 @@
 3. <strong>Pemulihan Kode</strong>: Implementasi diperbaiki kembali ke versi stabil, dan seluruh rangkaian pengujian kembali menunjukkan status hijau (100% lolos).</p>
 <h3>6.3 Momen Verifikasi Kecerdasan Buatan (<em>AI Verification Moment</em>)</h3>
 <p>Selama proses rekayasa, sarana bantu AI sempat mengusulkan agar penanganan kompetensi yang belum dinilai dilakukan dengan menetapkan nilai default <code>ai_level = 0</code> pada model ActiveRecord di Ruby.
-* <strong>Analisis Risiko</strong>: Berdasarkan inspeksi langsung terhadap berkas <code>db/schema.rb</code>, basis data PostgreSQL memiliki batasan <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Memasukkan angka 0 akan memicu kegagalan transaksi fatal <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> pada proses latar belakang.
-* <strong>Tindakan Koreksi</strong>: Saran tersebut ditolak. Solusi yang diimplementasikan adalah merancang berkas migrasi basis data reversibel <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code> untuk memperbarui batasan menjadi <code>CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))</code> serta memperbarui validasi model menjadi <code>allow_nil: true</code>.</p>
+<br />* <strong>Analisis Risiko</strong>: Berdasarkan inspeksi langsung terhadap berkas <code>db/schema.rb</code>, basis data PostgreSQL memiliki batasan <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Memasukkan angka 0 akan memicu kegagalan transaksi fatal <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> pada proses latar belakang.
+<br />* <strong>Tindakan Koreksi</strong>: Saran tersebut ditolak. Solusi yang diimplementasikan adalah merancang berkas migrasi basis data reversibel <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code> untuk memperbarui batasan menjadi <code>CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))</code> serta memperbarui validasi model menjadi <code>allow_nil: true</code>.</p>
+<p><strong>Momen Verifikasi Kedua &mdash; Temuan Selama Tinjauan Kode</strong>:<br />
+Saat meninjau <code>portfolio_skills_controller.rb#override</code>, teridentifikasi bahwa tabel <code>assessor_overrides</code> memiliki batasan <code>ai_level NOT NULL</code> di skema. Jika asesor mencoba mengoverride kompetensi yang belum dinilai, sistem akan melempar kesalahan fatal <code>PG::NotNullViolation</code>.
+<br />* <strong>Tindakan Koreksi</strong>: Migrasi kedua <code>20260909000002_allow_null_ai_level_in_assessor_overrides.rb</code> dibuat, validasi model <code>AssessorOverride</code> diperbarui dengan <code>allow_nil: true</code>, dan <code>schema.rb</code> diperbarui ke versi <code>2026_09_09_000002</code>.</p>
 <hr />
 <h2>7. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)</h2>
 <p>Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi, kepatuhan desain responsif, dan fungsionalitas profesional:</p>
