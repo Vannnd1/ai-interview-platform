@@ -84,14 +84,37 @@ module Gemini
 
       raise ApiError.new("No content in Gemini response") unless text
 
-      # Strip markdown code fences if present (e.g. ```json ... ```)
-      cleaned = text.strip.sub(/\A```(?:json)?\s*/, '').sub(/\s*```\z/, '')
+      extract_json(text)
+    end
 
+    def extract_json(text)
+      raw = text.strip
+      # 1. Direct parse attempt
       begin
-        JSON.parse(cleaned)
+        return JSON.parse(raw)
       rescue JSON::ParserError
-        cleaned
+        # continue to fence extraction
       end
+
+      # 2. Extract from markdown code fence
+      if (fence_match = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/))
+        begin
+          return JSON.parse(fence_match[1].strip)
+        rescue JSON::ParserError
+          # continue to bracket matching
+        end
+      end
+
+      # 3. Extract between outer JSON object/array brackets
+      if (bracket_match = raw.match(/(\{[\s\S]*\}|\[[\s\S]*\])/))
+        begin
+          return JSON.parse(bracket_match[1])
+        rescue JSON::ParserError
+          # continue
+        end
+      end
+
+      raw
     end
   end
 end

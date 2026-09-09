@@ -148,34 +148,92 @@ module Portfolios
     end
 
     def save_skills(portfolio, response)
-      data = response.is_a?(Hash) ? response : JSON.parse(response)
+      data = response.is_a?(Hash) ? response : extract_json_safely(response)
 
       # Destroy existing skills (idempotent regeneration)
       portfolio.portfolio_skills.destroy_all
 
+      coverage_maps_by_id = @session.coverage_maps.index_by(&:skill_id)
+      coverage_maps_by_label = @session.coverage_maps.index_by { |m| m.skill_label.downcase }
+
       (data['configured_skills'] || []).each do |skill_data|
+        map = coverage_maps_by_id[skill_data['skill_id']] || (skill_data['skill_label'] && coverage_maps_by_label[skill_data['skill_label'].downcase])
+
+        # A skill is unassessed if coverage map was not_yet / 0 probes, or level is missing/zero
+        is_unassessed = map && (map.state == 'not_yet' || map.probe_count.zero?)
+        raw_level = skill_data['level']
+
+        level = if is_unassessed || raw_level.blank? || raw_level.to_i.zero?
+                  nil
+                else
+                  raw_level.to_i.clamp(1, 5)
+                end
+
+        confidence = if level.nil?
+                       'low'
+                     else
+                       %w[high medium low].include?(skill_data['confidence']) ? skill_data['confidence'] : 'medium'
+                     end
+
+        summary = if level.nil?
+                    skill_data['competency_summary'].presence || 'Skill was not assessed during this session due to time limit or interview flow.'
+                  else
+                    skill_data['competency_summary'].presence || 'No summary provided.'
+                  end
+
         portfolio.portfolio_skills.create!(
           skill_id:           skill_data['skill_id'],
           skill_label:        skill_data['skill_label'],
           is_discovered:      false,
-          ai_level:           skill_data['level'].to_i.clamp(1, 5),
-          ai_confidence:      skill_data['confidence'],
+          ai_level:           level,
+          ai_confidence:      confidence,
           evidence:           Array(skill_data['evidence']).first(3),
-          competency_summary: skill_data['competency_summary']
+          competency_summary: summary
         )
       end
 
       (data['discovered_skills'] || []).each do |skill_data|
+        raw_level = skill_data['level']
+        level = (raw_level.present? && raw_level.to_i > 0) ? raw_level.to_i.clamp(1, 5) : 2
+        confidence = %w[high medium low].include?(skill_data['confidence']) ? skill_data['confidence'] : 'low'
+
         portfolio.portfolio_skills.create!(
           skill_id:           nil,
           skill_label:        skill_data['skill_label'],
           is_discovered:      true,
-          ai_level:           skill_data['level'].to_i.clamp(1, 5),
-          ai_confidence:      skill_data['confidence'],
+          ai_level:           level,
+          ai_confidence:      confidence,
           evidence:           Array(skill_data['evidence']).first(3),
-          competency_summary: skill_data['competency_summary']
+          competency_summary: skill_data['competency_summary'].presence || 'Discovered skill mentioned during interview.'
         )
       end
+    end
+
+    def extract_json_safely(text)
+      raw = text.to_s.strip
+      begin
+        return JSON.parse(raw)
+      rescue JSON::ParserError
+        # continue
+      end
+
+      if (fence = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/))
+        begin
+          return JSON.parse(fence[1].strip)
+        rescue JSON::ParserError
+          # continue
+        end
+      end
+
+      if (bracket = raw.match(/(\{[\s\S]*\}|\[[\s\S]*\])/))
+        begin
+          return JSON.parse(bracket[1])
+        rescue JSON::ParserError
+          # continue
+        end
+      end
+
+      raise JSON::ParserError, "Could not extract JSON from Gemini response: #{raw.truncate(100)}"
     end
   end
 end

@@ -43,11 +43,11 @@ module FitGap
       comparisons = vacancy_skills.map do |label, vacancy_skill|
         portfolio_skill = find_portfolio_skill(portfolio_skills, label, vacancy_skill.skill_id)
 
-        if portfolio_skill
-          candidate_level  = portfolio_skill[:effective_level]
-          expected_level   = vacancy_skill.expected_level
-          delta            = candidate_level - expected_level
-          result           = delta == 0 ? 'match' : (delta > 0 ? 'exceed' : 'gap')
+        if portfolio_skill && portfolio_skill[:effective_level].present?
+          candidate_level = portfolio_skill[:effective_level]
+          expected_level  = vacancy_skill.expected_level
+          delta           = candidate_level - expected_level
+          result          = delta == 0 ? 'match' : (delta > 0 ? 'exceed' : 'gap')
         else
           candidate_level = nil
           expected_level  = vacancy_skill.expected_level
@@ -60,8 +60,10 @@ module FitGap
           skill_id:        vacancy_skill.skill_id,
           candidate_level: candidate_level,
           expected_level:  expected_level,
+          required_level:  expected_level, # alias for frontend contract compatibility
           result:          result,
           delta:           delta,
+          is_override:     portfolio_skill&.dig(:overridden) || false,
           confidence:      portfolio_skill&.dig(:confidence)
         }
       end
@@ -100,12 +102,39 @@ module FitGap
 
       begin
         response = @gemini_client.generate_content(prompt, temperature: 0.4)
-        data = response.is_a?(Hash) ? response : JSON.parse(response)
+        data = response.is_a?(Hash) ? response : extract_json_safely(response)
         { culture: data['culture_narrative'], overall: data['overall_narrative'] }
       rescue => e
         Rails.logger.error("[N13] Narrative generation failed: #{e.message}")
         { culture: nil, overall: generate_fallback_narrative(skill_comparisons) }
       end
+    end
+
+    def extract_json_safely(text)
+      raw = text.to_s.strip
+      begin
+        return JSON.parse(raw)
+      rescue JSON::ParserError
+        # continue
+      end
+
+      if (fence = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/))
+        begin
+          return JSON.parse(fence[1].strip)
+        rescue JSON::ParserError
+          # continue
+        end
+      end
+
+      if (bracket = raw.match(/(\{[\s\S]*\}|\[[\s\S]*\])/))
+        begin
+          return JSON.parse(bracket[1])
+        rescue JSON::ParserError
+          # continue
+        end
+      end
+
+      raise JSON::ParserError, "Could not extract JSON from narrative response"
     end
 
     def build_narrative_prompt(gaps, matches, exceeds, not_assessed)
