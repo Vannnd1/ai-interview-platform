@@ -10,7 +10,7 @@ Laporan ini menyajikan dokumentasi menyeluruh atas rekayasa ulang (*revamp*) dan
 * **Repositori Kode**: `github.com/rakamindev/ai-interview-platform`
 * **Branch Pengerjaan**: `feature/monozukuri-revamp`
 * **Tautan Pull Request (PR) GitHub**: `https://github.com/rakamindev/ai-interview-platform/pull/1`
-* **Tautan Video Demonstrasi (3 - 5 Menit)**: `[Tautan akan ditambahkan setelah unggah ke Google Drive / Loom / YouTube Unlisted — lihat PANDUAN_PRESENTASI.md untuk petunjuk perekaman]`
+* **Video Demonstrasi (3 - 5 Menit)**: Disertakan langsung di dalam folder penyerahan Google Drive (berkas video berdampingan dengan berkas laporan ini).
 * **Klaim Kedalaman Rekayasa**: **Fullstack Seimbang (Ketahanan Sistem Backend dan Ketelitian Antarmuka Frontend)**
   * *Kedalaman Backend*: Penegakan isolasi data multi-tenant, perancangan **dua berkas migrasi basis data reversibel** yang aman terhadap data eksisting (`portfolio_skills` dan `assessor_overrides`), resiliensi parser JSON terhadap respons model kecerdasan buatan (Gemini), penyesuaian batasan skema untuk kompetensi yang belum teruji (*unassessed skills*), serta penyusunan *test harness* otomatis berbasis RSpec.
   * *Kedalaman Frontend*: Rekonsiliasi kontrak data tabel evaluasi kesesuaian (*Fit/Gap*), visualisasi indikator koreksi manual asesor (*human override*), visualisasi status kompetensi yang belum dinilai (*unassessed*), komponen bukti kutipan transkrip yang dapat diperluas (*collapsible evidence*), serta penerapan rangkaian pengujian komponen berbasis Vitest dengan tingkat kelulusan 100%.
@@ -171,7 +171,7 @@ Komponen kartu portofolio disempurnakan untuk memberikan transparansi bukti dan 
 
 ## 8. Cakupan Demonstrasi Video Walkthrough
 
-Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1.
+Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, berkas video demonstrasi berdurasi 3 hingga 5 menit disertakan langsung di dalam folder penyerahan Google Drive bersama dokumen ini.
 
 Video tersebut mencakup empat domain pembuktian utama:
 1. **Penjelasan Masalah Domain & Celah Kritis**: Menjelaskan konteks asesmen di Indonesia, mendemonstrasikan kegagalan kontrak data lowongan, serta mengungkap dampak diskriminatif dari pemaksaan nilai Level 1 pada kandidat.
