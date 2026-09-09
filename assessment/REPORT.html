@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assessment Report - Monozukuri Revamp</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    @page {
+        size: A4;
+        margin: 1.8cm 1.5cm;
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #1f2937;
+        background-color: #ffffff;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    h1 {
+        font-size: 26pt;
+        font-weight: 800;
+        color: #111827;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 12px;
+        margin-top: 0;
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+    }
+    
+    h2 {
+        font-size: 17pt;
+        font-weight: 700;
+        color: #1f2937;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 8px;
+        margin-top: 36px;
+        margin-bottom: 16px;
+        page-break-after: avoid;
+    }
+    
+    h3 {
+        font-size: 13pt;
+        font-weight: 600;
+        color: #374151;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+    }
+    
+    p, li {
+        font-size: 10pt;
+        color: #374151;
+    }
+    
+    ul, ol {
+        padding-left: 24px;
+        margin-bottom: 16px;
+    }
+    
+    li {
+        margin-bottom: 6px;
+    }
+    
+    strong {
+        color: #111827;
+        font-weight: 600;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 9.5pt;
+        page-break-inside: avoid;
+    }
+    
+    th, td {
+        border: 1px solid #d1d5db;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    
+    th {
+        background-color: #f3f4f6;
+        font-weight: 600;
+        color: #111827;
+    }
+    
+    tr:nth-child(even) td {
+        background-color: #f9fafb;
+    }
+    
+    code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 8.5pt;
+        background-color: #f3f4f6;
+        padding: 2px 5px;
+        border-radius: 4px;
+        color: #b91c1c;
+        border: 1px solid #e5e7eb;
+    }
+    
+    pre {
+        background-color: #1e293b;
+        color: #f8fafc;
+        padding: 14px 18px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 8.5pt;
+        line-height: 1.45;
+        page-break-inside: avoid;
+    }
+    
+    pre code {
+        background-color: transparent;
+        color: inherit;
+        padding: 0;
+        border: none;
+    }
+    
+    blockquote {
+        border-left: 4px solid #3b82f6;
+        margin: 16px 0;
+        padding: 8px 16px;
+        background-color: #eff6ff;
+        color: #1e40af;
+        border-radius: 0 6px 6px 0;
+    }
+    
+    hr {
+        border: 0;
+        height: 1px;
+        background: #e5e7eb;
+        margin: 32px 0;
+    }
+    
+    @media print {
+        body {
+            padding: 0;
+            max-width: 100%;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+</style>
+</head>
+<body>
+<h1>Fullstack Product Engineer Case Study: AI Interview Platform Revamp</h1>
+<p><strong>Candidate Engineering Report &amp; Monozukuri Execution Narrative</strong></p>
+<hr />
+<h2>1. Executive Summary &amp; Pull Request</h2>
+<ul>
+<li><strong>Repository</strong>: <code>github.com/rakamindev/ai-interview-platform</code></li>
+<li><strong>Feature Branch</strong>: <code>feature/monozukuri-revamp</code></li>
+<li><strong>GitHub Pull Request</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code></li>
+<li><strong>Claimed Engineering Depth</strong>: <strong>Balanced Fullstack with Deep System Rigor &amp; Product Craftsmanship</strong></li>
+<li><em>Backend Depth</em>: Multi-tenant security isolation, database migration safety against existing rows, resilient AI response parser with markdown fence extraction, schema constraint mitigation for unassessed skills, and RSpec testing harness.</li>
+<li><em>Frontend Depth</em>: Data contract reconciliation, human override visual indicators (<code>✏</code>), graceful handling of unassessed and low-confidence skills, collapsible quote evidence components, responsive UI polish, and Vitest component test harness.</li>
+</ul>
+<hr />
+<h2>2. Product Context &amp; Domain Immersion (5 Pillars)</h2>
+<h3>2.1 The Product</h3>
+<p>The platform is an AI-powered voice assessment system that conducts dynamic, human-like technical and behavioral interviews. Rather than relying on static question lists or keyword matching, it leverages Gemini Live for real-time audio interaction and Gemini Flash for asynchronous coverage analysis against structured behavioral anchors (Levels 1 through 5). Following the interview, Gemini Pro synthesizes transcript evidence into a candidate competency portfolio, which can then be evaluated against open vacancies via rule-based comparison and narrative generation (Fit/Gap analysis).</p>
+<h3>2.2 The Industry: Hiring &amp; Talent Assessment in Indonesia</h3>
+<p>In Indonesia's burgeoning digital economy, tech recruiters receive hundreds to thousands of applications for mid-to-senior engineering and product roles. Manual resume screening is prone to credentialism, pedigree bias, and high false-positive rates. Traditional multiple-choice coding quizzes are easily cheated or fail to measure how an engineer actually thinks, communicates, and makes trade-offs under ambiguity. The genuine leverage sits in <strong>structured behavioral probing</strong>—validating whether a candidate can defend architectural choices, navigate edge cases, and articulate tradeoffs.</p>
+<h3>2.3 What It Is For</h3>
+<p>The platform exists to produce <strong>defensible, evidence-backed competency signals</strong>. For the platform to remain trustworthy, every rating must be directly grounded in exact candidate quotations from the transcript. A single ungrounded assumption or algorithmic hallucination destroys employer trust and harms real careers.</p>
+<h3>2.4 The Users: Assessors, Recruiters, and Hiring Managers</h3>
+<ul>
+<li><strong>Recruiters &amp; Assessors</strong>: Need rapid, high-confidence visibility into whether candidates meet required job thresholds without listening through 45-minute audio recordings manually. They require full agency to calibrate or override AI assessments with notes when human context dictates.</li>
+<li><strong>Hiring Managers</strong>: Need actionable fit/gap reports highlighting specific competency strengths, growth headroom, and cultural dimensions to guide high-yield live final rounds.</li>
+</ul>
+<h3>2.5 The People Affected Who Never Chose It: Candidates &amp; UU PDP Compliance</h3>
+<p>Candidates do not choose to be interviewed by an AI; they cannot opt out of the employer's pipeline, and an inaccurate or biased evaluation can stall their professional trajectory.
+Under <strong>Indonesia's Personal Data Protection Law (UU No. 27 Tahun 2022 - UU PDP)</strong>:
+1. <strong>Fair &amp; Lawful Automated Processing</strong>: Candidates must not be unfairly penalized by flawed system defaults (such as unassessed skills being clamped to failing L1 scores).
+2. <strong>Data Minimization &amp; Confidentiality</strong>: Transcripts contain sensitive personal identifiers and career histories. Log streams must not expose candidate speech in plaintext, and tenant boundaries must be mathematically strictly enforced to prevent cross-company data leakage.
+3. <strong>Accountability &amp; Human In The Loop</strong>: Assessor overrides ensure that automated decisions are subject to human review and recalibration.</p>
+<hr />
+<h2>3. Severity-Ranked Problem &amp; Gap Analysis</h2>
+<table>
+<thead>
+<tr>
+<th>Issue ID</th>
+<th>Severity</th>
+<th>Problem &amp; Gap Description</th>
+<th>One-Line Impact Statement</th>
+<th>Type</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAP-01</strong></td>
+<td><strong>P0</strong></td>
+<td><strong>Contract Seam Mismatch in Fit/Gap Table</strong><br>Backend <code>FitGap::Engine</code> returns <code>expected_level</code>, while frontend <code>ComparisonTable.tsx</code> expects <code>required_level</code>. Furthermore, <code>is_override</code> was omitted from the engine payload.</td>
+<td>The "Required" column renders completely blank in the Fit/Gap table, and assessor overrides are invisible to hiring managers.</td>
+<td>Defective Seam</td>
+<td><code>FitGap::Engine</code><br><code>ComparisonTable.tsx</code></td>
+</tr>
+<tr>
+<td><strong>GAP-02</strong></td>
+<td><strong>P0</strong></td>
+<td><strong>Unassessed Skills Clamped to Failing L1</strong><br><code>Portfolios::Generator#save_skills</code> unconditionally called <code>.to_i.clamp(1, 5)</code>. Unassessed skills with level 0 or nil were saved as L1.</td>
+<td>Candidates who did not discuss a skill due to time limits are falsely rated as failing (L1), creating wrongful rejections.</td>
+<td>Defective Logic &amp; Missing Spec</td>
+<td><code>Portfolios::Generator</code><br><code>db/schema.rb</code></td>
+</tr>
+<tr>
+<td><strong>GAP-03</strong></td>
+<td><strong>P0</strong></td>
+<td><strong>Cross-Tenant Authorization &amp; Data Leakage</strong><br><code>PortfolioSkillsController#override</code> and <code>PortfoliosController#fitgap</code>/<code>export</code> queried entities directly by primary key without checking <code>Current.tenant_id</code>.</td>
+<td>An assessor in Organization A can view, export, or overwrite candidate ratings belonging to Organization B, violating UU PDP.</td>
+<td>Security Vulnerability</td>
+<td><code>portfolio_skills_controller.rb</code><br><code>portfolios_controller.rb</code></td>
+</tr>
+<tr>
+<td><strong>GAP-04</strong></td>
+<td><strong>P1</strong></td>
+<td><strong>Fragile JSON Extraction on Gemini Responses</strong><br><code>HttpClient</code> and <code>Portfolios::Generator</code> crashed with <code>JSON::ParserError</code> whenever Gemini wrapped output in markdown code blocks or preamble prose.</td>
+<td>Background portfolio generation permanently failed whenever Gemini generated conversational markdown fences.</td>
+<td>Defective Implementation</td>
+<td><code>Gemini::HttpClient</code><br><code>generator.rb</code></td>
+</tr>
+<tr>
+<td><strong>GAP-05</strong></td>
+<td><strong>P1</strong></td>
+<td><strong>Broken Candidate Invite URLs</strong><br><code>Session#invite_url</code> defaulted to <code>APP_BASE_URL</code> (<code>http://localhost:3001</code> backend port) rather than the Vite web application (<code>http://localhost:5173</code>).</td>
+<td>Candidates clicking interview invitation links hit a 404 backend endpoint instead of the interview client.</td>
+<td>Defective Configuration</td>
+<td><code>models/session.rb</code><br><code>application.yml</code></td>
+</tr>
+<tr>
+<td><strong>GAP-06</strong></td>
+<td><strong>P1</strong></td>
+<td><strong>Sensitive Candidate Speech in Application Logs</strong><br><code>LiveClient#log_gemini_event</code> logged raw candidate input transcriptions to standard output without masking.</td>
+<td>Sensitive candidate speech and potential PII was written into server logs, violating data privacy standards (UU PDP).</td>
+<td>Compliance Violation</td>
+<td><code>live_client.rb</code></td>
+</tr>
+<tr>
+<td><strong>GAP-07</strong></td>
+<td><strong>P2</strong></td>
+<td><strong>Missing Test Harness &amp; Continuous Integration</strong><br>RSpec had zero specs written, React app had no test runner, and no automated CI pipeline existed in the repository.</td>
+<td>Regressions could not be detected automatically before shipping changes to clients.</td>
+<td>Missing Infrastructure</td>
+<td><code>api/spec/</code><br><code>web/</code></td>
+</tr>
+<tr>
+<td><strong>GAP-08</strong></td>
+<td><strong>P2</strong></td>
+<td><strong>Neglected UI States (Long Quotes &amp; Empty States)</strong><br>Long candidate quotes broke card layouts, empty vacancies broke dropdowns, and unassessed skills crashed level badges.</td>
+<td>Poor UI presentation degraded user trust during stakeholder evaluation.</td>
+<td>UI/UX Flaw</td>
+<td><code>SkillPortfolioCard.tsx</code><br><code>LevelBadge.tsx</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constraint Signal (Escalated Architectural Debt)</h3>
+<ol>
+<li><strong>PostgreSQL Check Constraint on <code>portfolio_skills.ai_level</code></strong>: The original schema declared <code>ai_level null: false</code> with check constraint <code>ai_level &gt;= 1 AND ai_level &lt;= 5</code>. This forced the developer to clamp unassessed skills to 1. This required a reversible database migration allowing <code>ai_level IS NULL OR (ai_level BETWEEN 1 AND 5)</code>.</li>
+<li><strong>Denormalized Tenant Scoping</strong>: <code>portfolios</code>, <code>portfolio_skills</code>, and <code>fit_gap_reports</code> lacked direct <code>tenant_id</code> foreign keys, relying entirely on <code>portfolio.session.tenant_id</code>. Queries must strictly join through <code>session</code> to guarantee isolation.</li>
+</ol>
+<hr />
+<h2>4. Revamp Strategy &amp; Technical Trade-offs</h2>
+<h3>Evaluated Options</h3>
+<table>
+<thead>
+<tr>
+<th>Criteria</th>
+<th>Option A: Frontend Quick-Fix</th>
+<th>Option B: Fullstack Monozukuri Overhaul (Selected)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scope</strong></td>
+<td>React patch only: fallback <code>c.expected_level \|\| c.required_level</code>.</td>
+<td>End-to-end overhaul across Rails API, PostgreSQL schema, React UI, and test suites.</td>
+</tr>
+<tr>
+<td><strong>Product Impact</strong></td>
+<td>Displays required levels on screen, but leaves DB corrupted with false L1s and security holes open.</td>
+<td>Completely eliminates false negative ratings, secures multi-tenant data, provides human override indicators, and delivers delightful UX.</td>
+</tr>
+<tr>
+<td><strong>Maintainability</strong></td>
+<td>High risk: database retains bad data, API contracts remain inconsistent.</td>
+<td>Clean, contract-tested API with aliases, reversible migration, and automated CI.</td>
+</tr>
+<tr>
+<td><strong>Data Safety &amp; Compliance</strong></td>
+<td>Fails UU PDP compliance (cross-tenant leak and PII in logs remain unaddressed).</td>
+<td>Fully compliant: tenant-scoped queries, PII sanitization in logs, and transparent unassessed skill tracking.</td>
+</tr>
+<tr>
+<td><strong>Failure Modes</strong></td>
+<td>Gemini formatting variations still cause background worker crashes.</td>
+<td>Resilient JSON extractor handles code fences, preamble text, and API timeouts gracefully.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rationale for Option B</strong>: A product engineer is accountable for whether a product is genuinely worthy of shipping to real users. Papering over backend flaws in the frontend leaves candidates vulnerable to automated rejection and exposes company data. Option B solves the root causes from first principles.</p>
+<hr />
+<h2>5. Self-Defined Acceptance Criteria</h2>
+<ol>
+<li><strong>Fit/Gap Seam</strong>:</li>
+<li>Given any vacancy and completed portfolio, the Fit/Gap comparison table displays the required skill level (e.g. <code>L3</code>) matching the vacancy definition.</li>
+<li>When an assessor applies an override, the comparison table displays the overridden level, updates delta and result (<code>match</code>/<code>exceed</code>/<code>gap</code>), and renders the <code>✏ override</code> badge.</li>
+<li><strong>Unassessed Skills Handling</strong>:</li>
+<li>If a skill has not been probed (<code>probe_count == 0</code> or state <code>not_yet</code>), the portfolio generator records <code>ai_level = nil</code> and <code>confidence = 'low'</code>. It must never assign an arbitrary L1.</li>
+<li>The comparison table renders <code>Unassessed</code> with a <code>—</code> dash and tags the result as <code>Not Assessed</code> rather than a failing gap.</li>
+<li><strong>Model Parsing Resilience</strong>:</li>
+<li>If Gemini outputs JSON wrapped in <code>```json ... ```</code> or accompanied by conversational text, the parser successfully extracts and parses the JSON.</li>
+<li>In the event of Gemini timeout or complete failure, the error is caught, recorded in <code>generation_error</code>, and allows one-click retry (<code>regenerate</code>).</li>
+<li><strong>Tenant Isolation &amp; Security</strong>:</li>
+<li>Requests from Tenant A to view, export, or override data belonging to Tenant B return HTTP <code>404 Not Found</code>.</li>
+<li><strong>Candidate Invite Experience</strong>:</li>
+<li><code>Session#invite_url</code> points directly to the frontend web application (<code>http://localhost:5173/interview/:token</code>).</li>
+</ol>
+<hr />
+<h2>6. Verification &amp; Testing Evidence</h2>
+<h3>6.1 Automated Test Harness</h3>
+<ul>
+<li><strong>Backend (RSpec)</strong>:</li>
+<li><code>spec/services/fit_gap/engine_spec.rb</code>: Validates rule-based comparison calculations, override handling, unassessed skills, and markdown JSON extraction.</li>
+<li><code>spec/services/portfolios/generator_spec.rb</code>: Validates that unassessed skills are not clamped to L1 and markdown fences parse correctly.</li>
+<li><code>spec/models/session_spec.rb</code>: Validates <code>invite_url</code> port resolution and environment overrides.</li>
+<li><code>spec/requests/tenant_isolation_spec.rb</code>: Validates that cross-tenant overrides and portfolio accesses are blocked with HTTP 404.</li>
+<li><strong>Frontend (Vitest)</strong>:</li>
+<li><code>ComparisonTable.test.tsx</code>: Validates rendering of required levels, candidate levels, override badges, unassessed states, and empty states.</li>
+<li><strong>Continuous Integration</strong>:</li>
+<li>Configured <code>.github/workflows/ci.yml</code> running both test suites on pull requests.</li>
+</ul>
+<h3>6.2 Seeded Fault Test Proof</h3>
+<p>To prove that our automated tests genuinely catch regressions:
+1. <strong>Fault Injected</strong>: In <code>ComparisonTable.tsx</code>, deliberately reverted <code>c.expected_level ?? c.required_level</code> back to <code>c.required_level</code> and commented out <code>c.is_override</code>.
+2. <strong>Observed Failure</strong>: Vitest immediately caught the failure:
+   - <code>FAIL src/components/fitgap/__tests__/ComparisonTable.test.tsx</code>
+   - <code>AssertionError: expected element with text "L3" to be in the document</code>
+   - <code>AssertionError: expected element with text /override/i to be in the document</code>
+3. <strong>Restoration</strong>: Restored the hardened code, after which the suite returned green (100% passing).</p>
+<h3>6.3 AI Verification Moment</h3>
+<p>During implementation, AI-assisted code generation initially suggested handling unassessed skills by defaulting <code>ai_level = 0</code> in Ruby.
+- <strong>Why it was risky/wrong</strong>: The Postgres schema enforced <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Inserting <code>0</code> triggered an immediate database <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> error during portfolio generation, causing silent worker failure.
+- <strong>How it was caught &amp; corrected</strong>: Verified against <code>db/schema.rb</code>, recognized the check constraint conflict, wrote a proper reversible migration <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code>, and updated model validations to <code>allow_nil: true</code>.</p>
+<hr />
+<h2>7. Video Walkthrough Script (3-5 Minutes)</h2>
+<ul>
+<li><strong>0:00 - 0:45 (Problem Discovery &amp; Domain Context)</strong>: Introduce the platform, explain why talent assessment in Indonesia requires structured probing, and reveal the critical P0 seam where Fit/Gap reports rendered blank required levels and falsely failed candidates due to L1 clamping.</li>
+<li><strong>0:45 - 1:45 (Architecture &amp; Backend Hardening)</strong>: Walk through the reversible database migration, multi-tenant query scoping, robust Gemini JSON extraction, and PII log redaction for UU PDP compliance.</li>
+<li><strong>1:45 - 2:45 (Frontend Monozukuri Craftsmanship)</strong>: Demonstrate the revamped Fit/Gap comparison table, assessor human override workflow (<code>✏</code>), collapsible quote evidence, and responsive UI states.</li>
+<li><strong>2:45 - 3:30 (Testing Harness &amp; Seeded Fault)</strong>: Show the RSpec and Vitest suites executing, explain the seeded fault test proof, and demonstrate CI configuration.</li>
+<li><strong>3:30 - 4:00 (Conclusion &amp; Handover)</strong>: Summarize how the changes elevate the platform to a reliable, client-ready product standard.</li>
+</ul>
+<hr />
+<p><em>Report crafted with Monozukuri craftsmanship for Rakamin AI Interview Platform evaluation.</em></p>
+</body>
+</html>

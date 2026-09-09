@@ -164,16 +164,35 @@ export default function FitGapReportPage() {
           <Separator />
 
           {/* Culture & competency */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Culture &amp; Competency Fit</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">
-                {report.culture_narrative || report.overall_narrative}
-              </p>
-            </CardContent>
-          </Card>
+          {(report.culture_narrative || report.overall_narrative) && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold">Narrative Evaluation &amp; Synthesis</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 pb-4 space-y-4">
+                {report.culture_narrative && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                      Culture &amp; Competency Fit
+                    </h4>
+                    <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+                      {report.culture_narrative}
+                    </p>
+                  </div>
+                )}
+                {report.overall_narrative && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                      Overall Recommendation
+                    </h4>
+                    <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+                      {report.overall_narrative}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Discovered skills */}
           {portfolio && portfolio.skills.some((s) => s.is_discovered) && (

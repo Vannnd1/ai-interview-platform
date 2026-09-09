@@ -1,0 +1,96 @@
+name: CI / Monozukuri Quality Gate
+
+on:
+  push:
+    branches: [ main, 'feature/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-web:
+    name: Frontend (React / TypeScript / Vitest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: web/package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Typecheck & Build
+        run: npm run build
+
+      - name: Run Vitest Suite
+        run: npm test
+
+  test-api:
+    name: Backend (Rails / RSpec / Postgres)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: ai_interview_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_NAME: ai_interview_test
+      REDIS_URL: redis://localhost:6379/1
+      SECRET_KEY_BASE: test_secret_key_base_for_ci_1234567890abcdef
+      GEMINI_API_KEY: fake_key_for_testing
+      ALLOWED_ORIGINS: "*"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.2'
+          bundler-cache: true
+          working-directory: ./api
+
+      - name: Database Setup
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: Run RSpec Suite
+        run: bundle exec rspec
