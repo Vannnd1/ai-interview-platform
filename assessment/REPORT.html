@@ -28,7 +28,6 @@
         font-size: 9.5pt;
     }
     
-    /* Header Category Tag matching case study brief */
     .doc-category {
         font-size: 8.5pt;
         font-weight: 700;
@@ -39,7 +38,7 @@
     }
     
     h1 {
-        font-size: 20pt;
+        font-size: 19pt;
         font-weight: 800;
         color: #111827;
         line-height: 1.25;
@@ -49,7 +48,7 @@
     }
     
     p.doc-subtitle {
-        font-size: 10.5pt;
+        font-size: 10pt;
         font-weight: 500;
         color: #4b5563;
         margin-top: 0;
@@ -60,16 +59,16 @@
         border: 0;
         height: 1px;
         background-color: #d1d5db;
-        margin: 24px 0;
+        margin: 22px 0;
     }
     
     h2 {
-        font-size: 13.5pt;
+        font-size: 13pt;
         font-weight: 700;
         color: #111827;
         border-bottom: 1px solid #e5e7eb;
         padding-bottom: 6px;
-        margin-top: 28px;
+        margin-top: 26px;
         margin-bottom: 12px;
         page-break-after: avoid;
         letter-spacing: -0.01em;
@@ -79,17 +78,8 @@
         font-size: 10.5pt;
         font-weight: 700;
         color: #1f2937;
-        margin-top: 18px;
+        margin-top: 16px;
         margin-bottom: 8px;
-        page-break-after: avoid;
-    }
-    
-    h4 {
-        font-size: 9.5pt;
-        font-weight: 700;
-        color: #374151;
-        margin-top: 14px;
-        margin-bottom: 6px;
         page-break-after: avoid;
     }
     
@@ -196,22 +186,22 @@
 <body>
 <div class="doc-category">Case Study: Fullstack Product Engineer</div>
 <h1>Laporan Teknis: Rekayasa Ulang Platform AI Interview</h1>
-<p><strong>Dokumen Pelaksanaan Studi Kasus Fullstack Product Engineer</strong></p>
+<p><strong>Dokumen Penyerahan Studi Kasus Fullstack Product Engineer</strong></p>
 <hr />
 <h2>1. Ringkasan Eksekutif dan Tautan Deliverable</h2>
-<p>Laporan ini mendokumentasikan seluruh tahapan rekayasa ulang (<em>revamp</em>) dan penguatan sistem pada platform evaluasi wawancara berbasis kecerdasan buatan (<em>AI Interview Platform</em>). Rekayasa dilakukan secara terpadu mencakup arsitektur backend, integritas basis data, resiliensi integrasi model kecerdasan buatan, keamanan multi-tenant, hingga penyempurnaan antarmuka pengguna frontend dengan standar mutu rekayasa tinggi (<em>Monozukuri</em>).</p>
+<p>Laporan ini menyajikan dokumentasi menyeluruh atas rekayasa ulang (<em>revamp</em>) dan penguatan sistem pada platform evaluasi wawancara kerja berbasis kecerdasan buatan (<em>AI Interview Platform</em>). Seluruh perubahan dilaksanakan secara komprehensif pada lapisan backend, basis data, integrasi model kecerdasan buatan, keamanan multi-tenant, hingga penyempurnaan antarmuka pengguna frontend dengan menerapkan standar mutu rekayasa tinggi (<em>Monozukuri</em>).</p>
 <ul>
 <li><strong>Repositori Kode</strong>: <code>github.com/rakamindev/ai-interview-platform</code></li>
 <li><strong>Branch Pengerjaan</strong>: <code>feature/monozukuri-revamp</code></li>
 <li><strong>Tautan Pull Request (PR) GitHub</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code></li>
-<li><strong>Tautan Video Walkthrough (3 - 5 Menit)</strong>: <code>[Tautan Eksternal Video - Google Drive / Loom / YouTube Unlisted]</code></li>
+<li><strong>Tautan Video Demonstrasi (3 - 5 Menit)</strong>: <code>[Tautan Eksternal Video - Google Drive / Loom / YouTube Unlisted]</code></li>
 <li><strong>Klaim Kedalaman Rekayasa</strong>: <strong>Fullstack Seimbang (Ketahanan Sistem Backend dan Ketelitian Antarmuka Frontend)</strong></li>
 <li><em>Kedalaman Backend</em>: Penegakan isolasi data multi-tenant, perancangan migrasi basis data reversibel yang aman terhadap data eksisting, resiliensi parser JSON terhadap respons model kecerdasan buatan (Gemini), penyesuaian batasan skema untuk kompetensi yang belum teruji (<em>unassessed skills</em>), serta penyusunan <em>test harness</em> otomatis berbasis RSpec.</li>
 <li><em>Kedalaman Frontend</em>: Rekonsiliasi kontrak data tabel evaluasi kesesuaian (<em>Fit/Gap</em>), visualisasi indikator koreksi manual asesor (<em>human override</em>), visualisasi status kompetensi yang belum dinilai (<em>unassessed</em>), komponen bukti kutipan transkrip yang dapat diperluas (<em>collapsible evidence</em>), serta penerapan rangkaian pengujian komponen berbasis Vitest dengan tingkat kelulusan 100%.</li>
 </ul>
 <hr />
 <h2>2. Analisis Konteks Produk dan Domain (5 Pilar)</h2>
-<p>Sebelum merancang dan mengimplementasikan perubahan kode, analisis kontekstual mendalam dilakukan berdasarkan lima pilar domain produk:</p>
+<p>Sebelum merancang dan mengimplementasikan perubahan kode, dilakukan analisis kontekstual komprehensif berdasarkan lima pilar domain produk:</p>
 <h3>2.1 Karakteristik Produk</h3>
 <p>Platform ini merupakan sistem asesmen kompetensi berbasis suara dinamis yang memanfaatkan model Gemini Live untuk interaksi audio waktu nyata dan Gemini Flash untuk analisis cakupan kompetensi secara asinkron terhadap rubrik perilaku terstruktur (Level 1 hingga Level 5). Setelah sesi wawancara berakhir, Gemini Pro menyintesis bukti transkrip menjadi portofolio kompetensi kandidat yang kemudian dievaluasi terhadap kebutuhan lowongan kerja tertentu melalui kalkulasi berbasis aturan (<em>rule-based comparison</em>) dan narasi kesesuaian (<em>Fit/Gap analysis</em>).</p>
 <h3>2.2 Dinamika Industri: Rekrutmen dan Asesmen Talenta di Indonesia</h3>
@@ -297,7 +287,7 @@
 <p>Struktur basis data PostgreSQL pada tabel <code>portfolio_skills</code> memiliki batasan integritas <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Setiap perubahan logika untuk mengakomodasi status belum dinilai (<em>unassessed</em>) wajib diawali dengan modifikasi skema yang aman dan reversibel, bukan sekadar manipulasi nilai di tingkat aplikasi.</p>
 <hr />
 <h2>4. Strategi Solusi dan Matriks Evaluasi Trade-Off</h2>
-<p>Dalam menentukan arah implementasi, dilakukan perbandingan terhadap dua opsi teknis:</p>
+<p>Dalam menentukan arah implementasi, dilakukan evaluasi komparatif terhadap dua alternatif pendekatan teknis:</p>
 <h3>Matriks Evaluasi Perbandingan Solusi</h3>
 <table>
 <thead>
@@ -375,87 +365,26 @@
 * <strong>Analisis Risiko</strong>: Berdasarkan inspeksi langsung terhadap berkas <code>db/schema.rb</code>, basis data PostgreSQL memiliki batasan <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Memasukkan angka 0 akan memicu kegagalan transaksi fatal <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> pada proses latar belakang.
 * <strong>Tindakan Koreksi</strong>: Saran tersebut ditolak. Solusi yang diimplementasikan adalah merancang berkas migrasi basis data reversibel <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code> untuk memperbarui batasan menjadi <code>CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))</code> serta memperbarui validasi model menjadi <code>allow_nil: true</code>.</p>
 <hr />
-<h2>7. Desain Antarmuka dan Peningkatan Pengalaman Pengguna (UI/UX)</h2>
+<h2>7. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)</h2>
 <p>Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi dan fungsionalitas profesional:</p>
 <ol>
 <li><strong>Tabel Evaluasi Kesesuaian (<em>Fit/Gap Comparison Matrix</em>)</strong>:</li>
 <li>Menyajikan perbandingan terstruktur: Nama Kompetensi, Standar Lowongan (<em>Required</em>), Skor Kandidat (<em>Candidate</em>), dan Status Hasil (<em>Result</em>).</li>
 <li>Status hasil ditandai dengan klasifikasi teks profesional: <code>[Sesuai]</code>, <code>[Melampaui]</code>, <code>[Kesenjangan]</code>, dan <code>[Belum Dinilai]</code>.</li>
-<li>Kompetensi yang telah dikalibrasi oleh asesor menampilkan penanda <code>[Override]</code> dengan kontras warna netral yang informatif.</li>
+<li>Kompetensi yang telah dikalibrasi oleh asesor menampilkan penanda <code>[Override]</code> dengan kontras visual informatif.</li>
 <li>Dilengkapi baris rekapitulasi kuantitatif (<em>summary chips</em>) di bagian bawah tabel untuk mempercepat asesmen awal.</li>
 <li><strong>Kartu Portofolio Kompetensi (<em>Skill Portfolio Card</em>)</strong>:</li>
 <li>Memberikan penjelasan naratif transparan bagi kompetensi yang belum diuji: <em>"Kompetensi ini belum cukup terprospek selama wawancara. Tidak ada peringkat yang diberikan untuk menghindari penilaian negatif yang tidak akurat."</em></li>
 <li>Bukti kutipan percakapan transkrip dilengkapi fitur interaktif buka-tutup (<em>View all / Collapse</em>) guna menjaga kerapian tata letak antarmuka.</li>
 </ol>
 <hr />
-<h2>8. Panduan dan Naskah Video Walkthrough (3 - 5 Menit)</h2>
-<p>Sesuai dengan ketentuan evaluasi studi kasus, video demonstrasi berdurasi 3 hingga 5 menit disediakan untuk memberikan gambaran menyeluruh kepada Tim Produk dan Tim Teknik.</p>
-<h3>8.1 Parameter Teknis Rekaman</h3>
-<ul>
-<li><strong>Alat Perekam</strong>: Loom, OBS Studio, atau rekaman Google Meet mandiri.</li>
-<li><strong>Resolusi Rekaman</strong>: 1080p, kualitas audio jernih.</li>
-<li><strong>Durasi Target</strong>: 3 menit 30 detik hingga 4 menit 30 detik (batas maksimal 5 menit).</li>
-<li><strong>Jendela yang Disiapkan</strong>:</li>
-<li>Peramban web: Halaman laporan Fit/Gap dan portofolio kandidat pada aplikasi lokal.</li>
-<li>Editor kode (VS Code): Berkas <code>FitGap::Engine</code>, migrasi basis data, dan berkas pengujian.</li>
-<li>Terminal: Eksekusi <code>npm test</code> (Vitest) dan status commit Git.</li>
-</ul>
-<hr />
-<h3>8.2 Struktur Pemaparan dan Poin Pembicaraan Formal</h3>
-<h4>[Menit 0:00 - 0:45] Pembuka dan Identifikasi Masalah Kritis</h4>
-<ul>
-<li><strong>Fokus Tampilan</strong>: Antarmuka aplikasi web lokal atau judul presentasi.</li>
-<li><strong>Poin Pemaparan</strong>:<blockquote>
-<p>"Selamat pagi/siang tim penilai Rakamin. Pada kesempatan ini saya memaparkan hasil rekayasa ulang dan penguatan sistem pada platform asesmen wawancara AI ini.
-Dari penelusuran menyeluruh, ditemukan dua celah kritis P0:
-Pertama, ketidaksinkronan kontrak data yang menyebabkan kolom standar lowongan pada tabel Fit/Gap tampil kosong tanpa data.
-Kedua, cacat logika di mana kompetensi yang belum sempat diuji karena keterbatasan durasi wawancara dipaksakan menjadi Level 1. Hal ini berakibat pada penolakan sepihak terhadap kandidat yang tidak adil serta melanggar prinsip kepatuhan UU PDP."</p>
-</blockquote>
-</li>
-</ul>
-<h4>[Menit 0:45 - 1:45] Penguatan Fondasi Arsitektur Backend</h4>
-<ul>
-<li><strong>Fokus Tampilan</strong>: Editor kode (VS Code: <code>FitGap::Engine</code>, berkas migrasi database, <code>Gemini::HttpClient</code>).</li>
-<li><strong>Poin Pemaparan</strong>:<blockquote>
-<p>"Untuk menuntaskan masalah tersebut dari akarnya, kami memperkuat lapisan arsitektur backend:
-1. Diterapkan migrasi basis data reversibel yang mengizinkan nilai NULL untuk kompetensi yang belum diuji, menggantikan batasan skema lama secara aman tanpa merusak data historis.
-2. Penegakan isolasi kueri multi-tenant diterapkan pada pengontrol portofolio untuk memastikan upaya akses data lintas-organisasi langsung diblokir dengan status HTTP 404.
-3. Klien HTTP model Gemini diperkuat dengan pembersih blok kode markdown agar sistem tidak mengalami crash saat menerima keluaran teks percakapan.
-4. Demi mematuhi ketentuan UU PDP, transkrip percakapan audio kandidat diredaksi pada berkas log server menjadi metadata panjang audio."</p>
-</blockquote>
-</li>
-</ul>
-<h4>[Menit 1:45 - 2:45] Penyempurnaan Antarmuka dan Interaksi Frontend</h4>
-<ul>
-<li><strong>Fokus Tampilan</strong>: Peramban web (Tabel perbandingan Fit/Gap dan Kartu Portofolio).</li>
-<li><strong>Poin Pemaparan</strong>:<blockquote>
-<p>"Pada lapisan antarmuka pengguna, tabel evaluasi Fit/Gap telah disempurnakan secara menyeluruh:
-Kolom standar lowongan dan nilai kandidat kini terpetakan secara presisi, lengkap dengan kalkulasi selisih nilai.
-Sistem menyediakan visualisasi yang jelas saat penilai melakukan koreksi manual melalui penanda Override.
-Kompetensi yang belum teruji ditampilkan secara transparan dengan status Belum Dinilai, bukan kegagalan.
-Pada kartu portofolio, kutipan bukti transkrip kini dapat dibuka dan ditutup dengan interaksi yang nyaman, menjaga kerapian dokumen evaluasi."</p>
-</blockquote>
-</li>
-</ul>
-<h4>[Menit 2:45 - 3:30] Verifikasi Rekayasa Kualitas dan Uji Cacat</h4>
-<ul>
-<li><strong>Fokus Tampilan</strong>: Terminal (menjalankan <code>npm test</code>) dan editor kode pengujian.</li>
-<li><strong>Poin Pemaparan</strong>:<blockquote>
-<p>"Untuk membuktikan ketahanan sistem, kami membangun rangkaian pengujian otomatis di frontend dengan Vitest. Seluruh 7 skenario pengujian berhasil lolos 100% dalam waktu 1.8 detik.
-Kami juga membuktikan sensitivitas pengujian melalui Seeded Fault Test: logika pemetaan sengaja dirusak, dan pengujian secara akurat menangkap kegagalan tersebut.
-Selain itu, saat AI menyarankan nilai default 0 yang berisiko memicu pelanggaran batasan skema PostgreSQL, kami memverifikasi skema data dan memilih solusi migrasi basis data yang tepat."</p>
-</blockquote>
-</li>
-</ul>
-<h4>[Menit 3:30 - 4:00] Penutup dan Kesimpulan</h4>
-<ul>
-<li><strong>Fokus Tampilan</strong>: Status commit Git dan struktur berkas deliverable laporan.</li>
-<li><strong>Poin Pemaparan</strong>:<blockquote>
-<p>"Seluruh perubahan kode telah tersimpan secara modular pada branch feature/monozukuri-revamp dan terdokumentasi lengkap dalam dokumen laporan eksekutif PDF ini.
-Platform ini kini telah bertransformasi menjadi produk asesmen talenta yang tangguh, aman, berkeadilan, dan siap diimplementasikan untuk kebutuhan pengguna riil di industri. Terima kasih."</p>
-</blockquote>
-</li>
-</ul>
+<h2>8. Cakupan Demonstrasi Video Walkthrough</h2>
+<p>Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1. </p>
+<p>Video tersebut mencakup empat domain pembuktian utama:
+1. <strong>Penjelasan Masalah Domain &amp; Celah Kritis</strong>: Menjelaskan konteks asesmen di Indonesia, mendemonstrasikan kegagalan kontrak data lowongan, serta mengungkap dampak diskriminatif dari pemaksaan nilai Level 1 pada kandidat.
+2. <strong>Verifikasi Arsitektur Backend &amp; Keamanan</strong>: Menampilkan implementasi migrasi basis data reversibel, pembuktian isolasi data multi-tenant (HTTP 404), serta kepatuhan UU PDP pada log sistem.
+3. <strong>Penyempurnaan Antarmuka &amp; Interaksi Asesor</strong>: Mendemonstrasikan keterbacaan tabel Fit/Gap baru, alur kalibrasi manual nilai AI (<em>override</em>), penanganan kompetensi belum dinilai, serta fitur ekspansi kutipan transkrip.
+4. <strong>Ketahanan Uji &amp; Rekayasa Kualitas</strong>: Memperlihatkan eksekusi pengujian otomatis 100% hijau, pembuktian uji regresi sengaja (<em>Seeded Fault Test</em>), dan hasil kompilasi produksi tanpa galat.</p>
 <hr />
 <p><em>Dokumen laporan teknis ini disusun dengan standar keahlian rekayasa Monozukuri untuk evaluasi studi kasus Rakamin AI Interview Platform.</em></p>
 </body>
