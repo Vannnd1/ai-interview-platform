@@ -155,11 +155,12 @@
 <h1>Fullstack Product Engineer Case Study: AI Interview Platform Revamp</h1>
 <p><strong>Candidate Engineering Report &amp; Monozukuri Execution Narrative</strong></p>
 <hr />
-<h2>1. Executive Summary &amp; Pull Request</h2>
+<h2>1. Executive Summary &amp; Deliverable Links</h2>
 <ul>
 <li><strong>Repository</strong>: <code>github.com/rakamindev/ai-interview-platform</code></li>
 <li><strong>Feature Branch</strong>: <code>feature/monozukuri-revamp</code></li>
-<li><strong>GitHub Pull Request</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code></li>
+<li><strong>GitHub Pull Request</strong>: <code>https://github.com/rakamindev/ai-interview-platform/pull/1</code> <em>(or active submission PR)</em></li>
+<li><strong>Video Walkthrough Demonstration (3-5 min)</strong>: <code>[Insert Video Link Here - Loom / Google Drive / YouTube Unlisted]</code></li>
 <li><strong>Claimed Engineering Depth</strong>: <strong>Balanced Fullstack with Deep System Rigor &amp; Product Craftsmanship</strong></li>
 <li><em>Backend Depth</em>: Multi-tenant security isolation, database migration safety against existing rows, resilient AI response parser with markdown fence extraction, schema constraint mitigation for unassessed skills, and RSpec testing harness.</li>
 <li><em>Frontend Depth</em>: Data contract reconciliation, human override visual indicators (<code>✏</code>), graceful handling of unassessed and low-confidence skills, collapsible quote evidence components, responsive UI polish, and Vitest component test harness.</li>
@@ -352,13 +353,66 @@ Under <strong>Indonesia's Personal Data Protection Law (UU No. 27 Tahun 2022 - U
 - <strong>Why it was risky/wrong</strong>: The Postgres schema enforced <code>CHECK (ai_level BETWEEN 1 AND 5)</code>. Inserting <code>0</code> triggered an immediate database <code>ActiveRecord::StatementInvalid: PG::CheckViolation</code> error during portfolio generation, causing silent worker failure.
 - <strong>How it was caught &amp; corrected</strong>: Verified against <code>db/schema.rb</code>, recognized the check constraint conflict, wrote a proper reversible migration <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code>, and updated model validations to <code>allow_nil: true</code>.</p>
 <hr />
-<h2>7. Video Walkthrough Script (3-5 Minutes)</h2>
+<h2>7. Video Walkthrough Script &amp; Recording Guide (3-5 Minutes)</h2>
+<p>Per requirements in <strong>Step 6 (Report Checklist)</strong>, the candidate submission includes a 3 to 5 minute video demonstration hosted on an external platform (Loom, YouTube Unlisted, Google Drive).</p>
+<h3>7.1 Recording Setup &amp; Scene Checklist</h3>
 <ul>
-<li><strong>0:00 - 0:45 (Problem Discovery &amp; Domain Context)</strong>: Introduce the platform, explain why talent assessment in Indonesia requires structured probing, and reveal the critical P0 seam where Fit/Gap reports rendered blank required levels and falsely failed candidates due to L1 clamping.</li>
-<li><strong>0:45 - 1:45 (Architecture &amp; Backend Hardening)</strong>: Walk through the reversible database migration, multi-tenant query scoping, robust Gemini JSON extraction, and PII log redaction for UU PDP compliance.</li>
-<li><strong>1:45 - 2:45 (Frontend Monozukuri Craftsmanship)</strong>: Demonstrate the revamped Fit/Gap comparison table, assessor human override workflow (<code>✏</code>), collapsible quote evidence, and responsive UI states.</li>
-<li><strong>2:45 - 3:30 (Testing Harness &amp; Seeded Fault)</strong>: Show the RSpec and Vitest suites executing, explain the seeded fault test proof, and demonstrate CI configuration.</li>
-<li><strong>3:30 - 4:00 (Conclusion &amp; Handover)</strong>: Summarize how the changes elevate the platform to a reliable, client-ready product standard.</li>
+<li><strong>Tool</strong>: Loom, OBS Studio, or Google Meet recording.</li>
+<li><strong>Resolution</strong>: 1080p, clear microphone audio, camera bubble optional.</li>
+<li><strong>Target Duration</strong>: 3:30 to 4:30 (strictly within 3 to 5 minutes).</li>
+<li><strong>Screens to Have Ready</strong>:</li>
+<li><strong>Browser Tab 1</strong>: Web App running locally (Fit/Gap Report Page showing comparison matrix, override badges, unassessed states).</li>
+<li><strong>Browser Tab 2</strong>: Portfolio details page showing collapsible candidate quote evidence.</li>
+<li><strong>IDE / VS Code</strong>: Split view of <code>FitGap::Engine</code> + <code>ComparisonTable.tsx</code>, and migration file <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code>.</li>
+<li><strong>Terminal</strong>: Terminal showing <code>npm test</code> passing (Vitest 100% green) and Git commit log.</li>
+</ul>
+<hr />
+<h3>7.2 Segment Breakdown &amp; Presenter's Script</h3>
+<h4>[0:00 - 0:45] Intro &amp; Problem Discovery (The "Why")</h4>
+<ul>
+<li><strong>Screen</strong>: Camera / Title Slide or Local Web App Homepage.</li>
+<li><strong>Key Talking Points</strong>:</li>
+<li><em>"Halo tim reviewer Rakamin, saya mempresentasikan hasil revamp untuk platform AI Interview ini dengan standar Monozukuri craftsmanship."</em></li>
+<li><em>"Saat menguji aplikasi secara end-to-end, saya menemukan dua celah kritis P0 yang merugikan pengguna dan kandidat:"</em><ol>
+<li><em>Kontrak data antara backend dan frontend patah (<code>expected_level</code> vs <code>required_level</code>), menyebabkan kolom Required di tabel Fit/Gap kosong blank.</em></li>
+<li><em>Bug clamping di generator portfolio yang memaksa skill yang belum diuji (<code>unassessed</code>) menjadi Level 1. Ini menghasilkan false rejection yang sangat fatal bagi masa depan kandidat dan melanggar prinsip keadilan pemrosesan UU PDP.</em></li>
+</ol>
+</li>
+</ul>
+<h4>[0:45 - 1:45] Architecture &amp; Backend Hardening (The "How")</h4>
+<ul>
+<li><strong>Screen</strong>: VS Code (<code>api/app/services/fit_gap/engine.rb</code>, <code>api/db/migrate/</code>, <code>api/app/clients/gemini/http_client.rb</code>).</li>
+<li><strong>Key Talking Points</strong>:</li>
+<li><em>"Di backend, saya tidak hanya menambal bug secara kosmetik, tetapi memperbaiki fondasi data:"</em></li>
+<li><em>"Pertama, saya merancang migrasi database reversibel yang mengizinkan <code>ai_level</code> bernilai <code>NULL</code> untuk skill yang belum teruji, menggantikan constraint check lama dengan aman tanpa merusak data yang ada."</em></li>
+<li><em>"Kedua, multi-tenant scoping diperketat di <code>PortfoliosController</code> dan <code>PortfolioSkillsController</code> sehingga akses lintas tenant langsung menghasilkan HTTP 404."</em></li>
+<li><em>"Ketiga, HTTP client Gemini diperkuat dengan markdown code fence parser agar tidak crash saat model AI menghasilkan output berformat markdown atau conversational prose."</em></li>
+<li><em>"Keempat, untuk kepatuhan UU PDP Indonesia, log transkripsi suara kandidat di <code>LiveClient</code> diredaksi menjadi metadata panjang audio saja."</em></li>
+</ul>
+<h4>[1:45 - 2:45] Frontend Monozukuri Craftsmanship (The "Experience")</h4>
+<ul>
+<li><strong>Screen</strong>: Browser (Fit/Gap Report &amp; Candidate Portfolio in Web App).</li>
+<li><strong>Key Talking Points</strong>:</li>
+<li><em>"Beralih ke frontend, tabel Fit/Gap telah dirombak total:"</em></li>
+<li><em>"Kolom Required kini tampil presisi, delta dihitung secara matematis (<code>+1</code>, <code>-1</code>), dan terdapat chips ringkasan (Match, Exceeds, Gap, Not Assessed).'</em></li>
+<li><em>"Ketika assessor melakukan intervensi atau kalibrasi manusia terhadap skor AI, sistem menampilkan badge <code>✏ override</code> yang elegan."</em></li>
+<li><em>"Pada kartu portfolio, skill yang belum sempat di-probe tidak lagi divonis gagal, melainkan ditandai <code>Unassessed</code> dengan penjelasan transparan. Bukti kutipan percakapan kandidat juga dilengkapi kontrol collapsible (view all/collapse) yang nyaman dibaca."</em></li>
+</ul>
+<h4>[2:45 - 3:30] Testing Harness, Seeded Fault &amp; AI Verification (The "Rigor")</h4>
+<ul>
+<li><strong>Screen</strong>: Terminal executing <code>npm test</code> &amp; VS Code test files.</li>
+<li><strong>Key Talking Points</strong>:</li>
+<li><em>"Untuk membuktikan kualitas rekayasa (Engineering Rigor), saya membangun automated test harness lengkap:"</em></li>
+<li><em>"Menjalankan Vitest di frontend dengan 7 skenario pengujian yang mencakup rendering level, human override, dan unassessed states — semuanya passing 100% dalam waktu di bawah 2 detik."</em></li>
+<li><em>"Saya juga melakukan Seeded Fault Test: saya sengaja merusak logika kontrak data di <code>ComparisonTable.tsx</code>, dan test suite langsung mendeteksi kegagalan tersebut secara akurat."</em></li>
+<li><em>"Selain itu, pada momen verifikasi AI, AI sempat mengusulkan default <code>ai_level = 0</code>. Saya memverifikasi skema database Postgres dan mencegah terjadinya crash <code>PG::CheckViolation</code> dengan migrasi schema yang benar."</em></li>
+</ul>
+<h4>[3:30 - 4:00] Closing &amp; Handover</h4>
+<ul>
+<li><strong>Screen</strong>: GitHub PR / Assessment Deliverables folder.</li>
+<li><strong>Key Talking Points</strong>:</li>
+<li><em>"Seluruh kode telah di-commit secara rapi ke branch <code>feature/monozukuri-revamp</code>, didukung GitHub Actions CI pipeline, serta didokumentasikan dalam <code>REPORT.pdf</code> setebal format eksekutif di folder assessment."</em></li>
+<li><em>"Platform ini kini bukan sekadar kode yang bekerja, tetapi produk yang tangguh, adil, aman, dan siap digunakan oleh pengguna dan kandidat nyata di industri Indonesia. Terima kasih!"</em></li>
 </ul>
 <hr />
 <p><em>Report crafted with Monozukuri craftsmanship for Rakamin AI Interview Platform evaluation.</em></p>
