@@ -77,20 +77,22 @@ Dalam menentukan arah implementasi, dilakukan evaluasi komparatif terhadap dua a
 
 ## 5. Kriteria Penerimaan Mandiri (Acceptance Criteria)
 
-Sebelum penulisan kode dilaksanakan, ditetapkan kriteria keberterimaan terstruktur sebagai acuan verifikasi:
+Sebelum penulisan kode dilaksanakan, ditetapkan lima kriteria penerimaan terstruktur sebagai acuan verifikasi sistem:
 
-1. **Penanganan Kompetensi Belum Dinilai (*Unassessed Skills*)**:
-   * Kompetensi yang tidak sempat dibahas dalam wawancara (`probe_count == 0` atau status `not_yet`) wajib disimpan dengan nilai `ai_level = NULL` dan tingkat keyakinan `confidence = 'low'`.
-   * Pada tabel evaluasi kesesuaian (*Fit/Gap*), kompetensi tersebut wajib diklasifikasikan ke dalam kategori `not_assessed`, ditandai dengan label "Belum Dinilai", dan dikecualikan dari perhitungan kesenjangan negatif (*gap*).
-2. **Kalibrasi Manual oleh Asesor (*Human Override*)**:
-   * Apabila asesor melakukan kalibrasi manual terhadap suatu kompetensi, tabel perbandingan wajib menampilkan nilai hasil kalibrasi, memperbarui kalkulasi selisih nilai (*delta*), dan menampilkan penanda visual `[Override]`.
-3. **Resiliensi Parser Model Kecerdasan Buatan**:
-   * Sistem wajib mampu mengekstraksi struktur JSON secara akurat meskipun model membungkus keluaran dalam blok markdown atau teks pembuka.
-   * Apabila model mengalami gangguan batas waktu (*timeout*) atau kegagalan fatal, galat dicatat pada atribut `generation_error` dan tombol regenerasi disediakan.
-4. **Isolasi Akses Multi-Tenant**:
-   * Setiap permintaan data portofolio atau modifikasi nilai lintas-perusahaan wajib ditolak oleh sistem dengan status HTTP 404 (Not Found).
-5. **Resolusi Tautan Undangan**:
-   * Tautan pada atribut `Session#invite_url` wajib mengarah secara akurat ke antarmuka aplikasi web frontend (`http://localhost:5173/interview/:token`).
+* **Kriteria 1: Penanganan Kompetensi Belum Dinilai (Unassessed Skills)**  
+  Kompetensi yang tidak sempat dibahas dalam wawancara (`probe_count == 0` atau status `not_yet`) wajib disimpan dengan nilai `ai_level = NULL` dan tingkat keyakinan `confidence = 'low'`. Pada tabel evaluasi kesesuaian (*Fit/Gap*), kompetensi tersebut wajib diklasifikasikan ke dalam kategori `not_assessed`, ditandai dengan label "Belum Dinilai", dan dikecualikan dari perhitungan kesenjangan negatif (*gap*).
+
+* **Kriteria 2: Kalibrasi Manual oleh Asesor (Human Override)**  
+  Apabila asesor melakukan kalibrasi manual terhadap suatu kompetensi, tabel perbandingan wajib menampilkan nilai hasil kalibrasi, memperbarui kalkulasi selisih nilai (*delta*), dan menampilkan penanda visual `[Override]`.
+
+* **Kriteria 3: Resiliensi Parser Model Kecerdasan Buatan**  
+  Sistem wajib mampu mengekstraksi struktur JSON secara akurat meskipun model membungkus keluaran dalam blok markdown atau teks pembuka. Apabila model mengalami gangguan batas waktu (*timeout*) atau kegagalan fatal, galat dicatat pada atribut `generation_error` dan tombol regenerasi disediakan.
+
+* **Kriteria 4: Penegakan Isolasi Akses Multi-Tenant**  
+  Setiap permintaan data portofolio atau modifikasi nilai lintas-perusahaan wajib ditolak oleh sistem dengan status HTTP 404 (Not Found).
+
+* **Kriteria 5: Resolusi Alamat Tautan Undangan Wawancara**  
+  Tautan pada atribut `Session#invite_url` wajib mengarah secara akurat ke antarmuka aplikasi web frontend (`http://localhost:5173/interview/:token`).
 
 ---
 
@@ -127,22 +129,36 @@ Selama proses rekayasa, sarana bantu AI sempat mengusulkan agar penanganan kompe
 
 ## 7. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)
 
-Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi dan fungsionalitas profesional:
+Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi, kepatuhan desain responsif, dan fungsionalitas profesional:
 
-1. **Tabel Evaluasi Kesesuaian (*Fit/Gap Comparison Matrix*)**:
-   * Menyajikan perbandingan terstruktur: Nama Kompetensi, Standar Lowongan (*Required*), Skor Kandidat (*Candidate*), dan Status Hasil (*Result*).
-   * Status hasil ditandai dengan klasifikasi teks profesional: `[Sesuai]`, `[Melampaui]`, `[Kesenjangan]`, dan `[Belum Dinilai]`.
-   * Kompetensi yang telah dikalibrasi oleh asesor menampilkan penanda `[Override]` dengan kontras visual informatif.
-   * Dilengkapi baris rekapitulasi kuantitatif (*summary chips*) di bagian bawah tabel untuk mempercepat asesmen awal.
-2. **Kartu Portofolio Kompetensi (*Skill Portfolio Card*)**:
-   * Memberikan penjelasan naratif transparan bagi kompetensi yang belum diuji: *"Kompetensi ini belum cukup terprospek selama wawancara. Tidak ada peringkat yang diberikan untuk menghindari penilaian negatif yang tidak akurat."*
-   * Bukti kutipan percakapan transkrip dilengkapi fitur interaktif buka-tutup (*View all / Collapse*) guna menjaga kerapian tata letak antarmuka.
+### 7.1 Matriks Evaluasi Kesesuaian (Fit/Gap Comparison Table)
+Komponen tabel evaluasi kesesuaian telah disempurnakan untuk memberikan visibilitas komprehensif bagi asesor dan hiring manager:
+* **Perbandingan Terstruktur**: Memetakan nama kompetensi, standar lowongan (*Required*), skor kandidat (*Candidate*), selisih (*Delta*), dan status hasil (*Result*).
+* **Klasifikasi Status Formal**: Status hasil diklasifikasikan secara jelas tanpa ambiguitas menjadi `[Sesuai]`, `[Melampaui]`, `[Kesenjangan]`, dan `[Belum Dinilai]`.
+* **Indikator Koreksi Manual Asesor**: Kompetensi yang disesuaikan secara manual menampilkan penanda `[Override]` dengan kontras visual informatif.
+* **Baris Rekapitulasi Kuantitatif**: Menampilkan ringkasan total kompetensi sesuai, melampaui, kesenjangan, dan belum dinilai di bagian bawah tabel.
+
+#### Representasi Visual Matriks Evaluasi Kesesuaian:
+
+| Kompetensi yang Dinilai | Standar Lowongan | Nilai Kandidat | Selisih (Delta) | Status Hasil Evaluasi |
+|---|:---:|:---:|:---:|:---:|
+| System Architecture & Scalability | L3 | L4 [Override] | +1 | [Melampaui] |
+| Database Design & Optimization | L4 | L4 | 0 | [Sesuai] |
+| API Security & Authentication | L3 | L2 | -1 | [Kesenjangan] |
+| CI/CD & Cloud Infrastructure | L3 | — | — | [Belum Dinilai] |
+
+*Catatan Rekapitulasi: Sesuai: 1 \| Melampaui: 1 \| Kesenjangan: 1 \| Belum Dinilai: 1 \| Penanda [Override] menandakan kalibrasi manual asesor.*
+
+### 7.2 Kartu Portofolio Kompetensi (Skill Portfolio Card)
+Komponen kartu portofolio disempurnakan untuk memberikan transparansi bukti dan kenyamanan navigasi dokumen:
+* **Pemberitahuan Transparan untuk Kompetensi Belum Diuji**: Untuk kompetensi yang belum sempat dibahas akibat keterbatasan durasi wawancara, sistem menampilkan kotak informasi naratif: *"Kompetensi ini belum cukup terprospek selama wawancara. Tidak ada peringkat yang diberikan untuk menghindari penilaian negatif yang tidak akurat."*
+* **Komponen Bukti Transkrip Interaktif**: Kutipan transkrip percakapan yang mendasari penilaian kini dilengkapi fitur interaktif buka-tutup (*View all / Collapse*) guna menjaga kerapian tampilan tanpa menghilangkan akses ke bukti faktual.
 
 ---
 
 ## 8. Cakupan Demonstrasi Video Walkthrough
 
-Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1. 
+Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1.
 
 Video tersebut mencakup empat domain pembuktian utama:
 1. **Penjelasan Masalah Domain & Celah Kritis**: Menjelaskan konteks asesmen di Indonesia, mendemonstrasikan kegagalan kontrak data lowongan, serta mengungkap dampak diskriminatif dari pemaksaan nilai Level 1 pada kandidat.

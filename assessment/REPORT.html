@@ -83,6 +83,15 @@
         page-break-after: avoid;
     }
     
+    h4 {
+        font-size: 9.5pt;
+        font-weight: 700;
+        color: #374151;
+        margin-top: 14px;
+        margin-bottom: 6px;
+        page-break-after: avoid;
+    }
+    
     p {
         margin-top: 0;
         margin-bottom: 10px;
@@ -322,21 +331,29 @@
 </table>
 <hr />
 <h2>5. Kriteria Penerimaan Mandiri (Acceptance Criteria)</h2>
-<p>Sebelum penulisan kode dilaksanakan, ditetapkan kriteria keberterimaan terstruktur sebagai acuan verifikasi:</p>
-<ol>
-<li><strong>Penanganan Kompetensi Belum Dinilai (<em>Unassessed Skills</em>)</strong>:</li>
-<li>Kompetensi yang tidak sempat dibahas dalam wawancara (<code>probe_count == 0</code> atau status <code>not_yet</code>) wajib disimpan dengan nilai <code>ai_level = NULL</code> dan tingkat keyakinan <code>confidence = 'low'</code>.</li>
-<li>Pada tabel evaluasi kesesuaian (<em>Fit/Gap</em>), kompetensi tersebut wajib diklasifikasikan ke dalam kategori <code>not_assessed</code>, ditandai dengan label "Belum Dinilai", dan dikecualikan dari perhitungan kesenjangan negatif (<em>gap</em>).</li>
-<li><strong>Kalibrasi Manual oleh Asesor (<em>Human Override</em>)</strong>:</li>
-<li>Apabila asesor melakukan kalibrasi manual terhadap suatu kompetensi, tabel perbandingan wajib menampilkan nilai hasil kalibrasi, memperbarui kalkulasi selisih nilai (<em>delta</em>), dan menampilkan penanda visual <code>[Override]</code>.</li>
-<li><strong>Resiliensi Parser Model Kecerdasan Buatan</strong>:</li>
-<li>Sistem wajib mampu mengekstraksi struktur JSON secara akurat meskipun model membungkus keluaran dalam blok markdown atau teks pembuka.</li>
-<li>Apabila model mengalami gangguan batas waktu (<em>timeout</em>) atau kegagalan fatal, galat dicatat pada atribut <code>generation_error</code> dan tombol regenerasi disediakan.</li>
-<li><strong>Isolasi Akses Multi-Tenant</strong>:</li>
-<li>Setiap permintaan data portofolio atau modifikasi nilai lintas-perusahaan wajib ditolak oleh sistem dengan status HTTP 404 (Not Found).</li>
-<li><strong>Resolusi Tautan Undangan</strong>:</li>
-<li>Tautan pada atribut <code>Session#invite_url</code> wajib mengarah secara akurat ke antarmuka aplikasi web frontend (<code>http://localhost:5173/interview/:token</code>).</li>
-</ol>
+<p>Sebelum penulisan kode dilaksanakan, ditetapkan lima kriteria penerimaan terstruktur sebagai acuan verifikasi sistem:</p>
+<ul>
+<li>
+<p><strong>Kriteria 1: Penanganan Kompetensi Belum Dinilai (Unassessed Skills)</strong><br />
+  Kompetensi yang tidak sempat dibahas dalam wawancara (<code>probe_count == 0</code> atau status <code>not_yet</code>) wajib disimpan dengan nilai <code>ai_level = NULL</code> dan tingkat keyakinan <code>confidence = 'low'</code>. Pada tabel evaluasi kesesuaian (<em>Fit/Gap</em>), kompetensi tersebut wajib diklasifikasikan ke dalam kategori <code>not_assessed</code>, ditandai dengan label "Belum Dinilai", dan dikecualikan dari perhitungan kesenjangan negatif (<em>gap</em>).</p>
+</li>
+<li>
+<p><strong>Kriteria 2: Kalibrasi Manual oleh Asesor (Human Override)</strong><br />
+  Apabila asesor melakukan kalibrasi manual terhadap suatu kompetensi, tabel perbandingan wajib menampilkan nilai hasil kalibrasi, memperbarui kalkulasi selisih nilai (<em>delta</em>), dan menampilkan penanda visual <code>[Override]</code>.</p>
+</li>
+<li>
+<p><strong>Kriteria 3: Resiliensi Parser Model Kecerdasan Buatan</strong><br />
+  Sistem wajib mampu mengekstraksi struktur JSON secara akurat meskipun model membungkus keluaran dalam blok markdown atau teks pembuka. Apabila model mengalami gangguan batas waktu (<em>timeout</em>) atau kegagalan fatal, galat dicatat pada atribut <code>generation_error</code> dan tombol regenerasi disediakan.</p>
+</li>
+<li>
+<p><strong>Kriteria 4: Penegakan Isolasi Akses Multi-Tenant</strong><br />
+  Setiap permintaan data portofolio atau modifikasi nilai lintas-perusahaan wajib ditolak oleh sistem dengan status HTTP 404 (Not Found).</p>
+</li>
+<li>
+<p><strong>Kriteria 5: Resolusi Alamat Tautan Undangan Wawancara</strong><br />
+  Tautan pada atribut <code>Session#invite_url</code> wajib mengarah secara akurat ke antarmuka aplikasi web frontend (<code>http://localhost:5173/interview/:token</code>).</p>
+</li>
+</ul>
 <hr />
 <h2>6. Bukti Pengujian dan Verifikasi Kualitas Sistem</h2>
 <h3>6.1 Hasil Pengujian Otomatis (<em>Automated Test Harness</em>)</h3>
@@ -366,20 +383,63 @@
 * <strong>Tindakan Koreksi</strong>: Saran tersebut ditolak. Solusi yang diimplementasikan adalah merancang berkas migrasi basis data reversibel <code>20260909000001_allow_null_ai_level_for_unassessed_skills.rb</code> untuk memperbarui batasan menjadi <code>CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))</code> serta memperbarui validasi model menjadi <code>allow_nil: true</code>.</p>
 <hr />
 <h2>7. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)</h2>
-<p>Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi dan fungsionalitas profesional:</p>
-<ol>
-<li><strong>Tabel Evaluasi Kesesuaian (<em>Fit/Gap Comparison Matrix</em>)</strong>:</li>
-<li>Menyajikan perbandingan terstruktur: Nama Kompetensi, Standar Lowongan (<em>Required</em>), Skor Kandidat (<em>Candidate</em>), dan Status Hasil (<em>Result</em>).</li>
-<li>Status hasil ditandai dengan klasifikasi teks profesional: <code>[Sesuai]</code>, <code>[Melampaui]</code>, <code>[Kesenjangan]</code>, dan <code>[Belum Dinilai]</code>.</li>
-<li>Kompetensi yang telah dikalibrasi oleh asesor menampilkan penanda <code>[Override]</code> dengan kontras visual informatif.</li>
-<li>Dilengkapi baris rekapitulasi kuantitatif (<em>summary chips</em>) di bagian bawah tabel untuk mempercepat asesmen awal.</li>
-<li><strong>Kartu Portofolio Kompetensi (<em>Skill Portfolio Card</em>)</strong>:</li>
-<li>Memberikan penjelasan naratif transparan bagi kompetensi yang belum diuji: <em>"Kompetensi ini belum cukup terprospek selama wawancara. Tidak ada peringkat yang diberikan untuk menghindari penilaian negatif yang tidak akurat."</em></li>
-<li>Bukti kutipan percakapan transkrip dilengkapi fitur interaktif buka-tutup (<em>View all / Collapse</em>) guna menjaga kerapian tata letak antarmuka.</li>
-</ol>
+<p>Antarmuka pengguna direkayasa ulang dengan prinsip kejelasan hierarki informasi, kepatuhan desain responsif, dan fungsionalitas profesional:</p>
+<h3>7.1 Matriks Evaluasi Kesesuaian (Fit/Gap Comparison Table)</h3>
+<p>Komponen tabel evaluasi kesesuaian telah disempurnakan untuk memberikan visibilitas komprehensif bagi asesor dan hiring manager:
+* <strong>Perbandingan Terstruktur</strong>: Memetakan nama kompetensi, standar lowongan (<em>Required</em>), skor kandidat (<em>Candidate</em>), selisih (<em>Delta</em>), dan status hasil (<em>Result</em>).
+* <strong>Klasifikasi Status Formal</strong>: Status hasil diklasifikasikan secara jelas tanpa ambiguitas menjadi <code>[Sesuai]</code>, <code>[Melampaui]</code>, <code>[Kesenjangan]</code>, dan <code>[Belum Dinilai]</code>.
+* <strong>Indikator Koreksi Manual Asesor</strong>: Kompetensi yang disesuaikan secara manual menampilkan penanda <code>[Override]</code> dengan kontras visual informatif.
+* <strong>Baris Rekapitulasi Kuantitatif</strong>: Menampilkan ringkasan total kompetensi sesuai, melampaui, kesenjangan, dan belum dinilai di bagian bawah tabel.</p>
+<h4>Representasi Visual Matriks Evaluasi Kesesuaian:</h4>
+<table>
+<thead>
+<tr>
+<th>Kompetensi yang Dinilai</th>
+<th style="text-align: center;">Standar Lowongan</th>
+<th style="text-align: center;">Nilai Kandidat</th>
+<th style="text-align: center;">Selisih (Delta)</th>
+<th style="text-align: center;">Status Hasil Evaluasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System Architecture &amp; Scalability</td>
+<td style="text-align: center;">L3</td>
+<td style="text-align: center;">L4 [Override]</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">[Melampaui]</td>
+</tr>
+<tr>
+<td>Database Design &amp; Optimization</td>
+<td style="text-align: center;">L4</td>
+<td style="text-align: center;">L4</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">[Sesuai]</td>
+</tr>
+<tr>
+<td>API Security &amp; Authentication</td>
+<td style="text-align: center;">L3</td>
+<td style="text-align: center;">L2</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">[Kesenjangan]</td>
+</tr>
+<tr>
+<td>CI/CD &amp; Cloud Infrastructure</td>
+<td style="text-align: center;">L3</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">[Belum Dinilai]</td>
+</tr>
+</tbody>
+</table>
+<p><em>Catatan Rekapitulasi: Sesuai: 1 | Melampaui: 1 | Kesenjangan: 1 | Belum Dinilai: 1 | Penanda [Override] menandakan kalibrasi manual asesor.</em></p>
+<h3>7.2 Kartu Portofolio Kompetensi (Skill Portfolio Card)</h3>
+<p>Komponen kartu portofolio disempurnakan untuk memberikan transparansi bukti dan kenyamanan navigasi dokumen:
+* <strong>Pemberitahuan Transparan untuk Kompetensi Belum Diuji</strong>: Untuk kompetensi yang belum sempat dibahas akibat keterbatasan durasi wawancara, sistem menampilkan kotak informasi naratif: <em>"Kompetensi ini belum cukup terprospek selama wawancara. Tidak ada peringkat yang diberikan untuk menghindari penilaian negatif yang tidak akurat."</em>
+* <strong>Komponen Bukti Transkrip Interaktif</strong>: Kutipan transkrip percakapan yang mendasari penilaian kini dilengkapi fitur interaktif buka-tutup (<em>View all / Collapse</em>) guna menjaga kerapian tampilan tanpa menghilangkan akses ke bukti faktual.</p>
 <hr />
 <h2>8. Cakupan Demonstrasi Video Walkthrough</h2>
-<p>Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1. </p>
+<p>Sebagai pemenuhan atas ketentuan evaluasi Tim Produk dan Tim Teknik, video demonstrasi berdurasi 3 hingga 5 menit telah disiapkan dan diunggah pada tautan deliverable di Bab 1.</p>
 <p>Video tersebut mencakup empat domain pembuktian utama:
 1. <strong>Penjelasan Masalah Domain &amp; Celah Kritis</strong>: Menjelaskan konteks asesmen di Indonesia, mendemonstrasikan kegagalan kontrak data lowongan, serta mengungkap dampak diskriminatif dari pemaksaan nilai Level 1 pada kandidat.
 2. <strong>Verifikasi Arsitektur Backend &amp; Keamanan</strong>: Menampilkan implementasi migrasi basis data reversibel, pembuktian isolasi data multi-tenant (HTTP 404), serta kepatuhan UU PDP pada log sistem.
