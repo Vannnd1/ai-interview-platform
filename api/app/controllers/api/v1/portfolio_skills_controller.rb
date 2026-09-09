@@ -19,9 +19,11 @@ module Api
             json_error(existing.errors.full_messages.first, :unprocessable_entity)
           end
         else
+          # ai_level may be nil for unassessed skills (GAP-02 fix);
+          # the assessor_overrides table now permits NULL for ai_level.
           new_override = @portfolio_skill.build_assessor_override(
             override_params.merge(
-              ai_level:      @portfolio_skill.ai_level,
+              ai_level:      @portfolio_skill.ai_level, # nil is allowed post-migration
               overridden_by: current_user.id,
               overridden_at: Time.current
             )

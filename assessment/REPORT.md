@@ -10,9 +10,9 @@ Laporan ini menyajikan dokumentasi menyeluruh atas rekayasa ulang (*revamp*) dan
 * **Repositori Kode**: `github.com/rakamindev/ai-interview-platform`
 * **Branch Pengerjaan**: `feature/monozukuri-revamp`
 * **Tautan Pull Request (PR) GitHub**: `https://github.com/rakamindev/ai-interview-platform/pull/1`
-* **Tautan Video Demonstrasi (3 - 5 Menit)**: `[Tautan Eksternal Video - Google Drive / Loom / YouTube Unlisted]`
+* **Tautan Video Demonstrasi (3 - 5 Menit)**: `[Tautan akan ditambahkan setelah unggah ke Google Drive / Loom / YouTube Unlisted — lihat PANDUAN_PRESENTASI.md untuk petunjuk perekaman]`
 * **Klaim Kedalaman Rekayasa**: **Fullstack Seimbang (Ketahanan Sistem Backend dan Ketelitian Antarmuka Frontend)**
-  * *Kedalaman Backend*: Penegakan isolasi data multi-tenant, perancangan migrasi basis data reversibel yang aman terhadap data eksisting, resiliensi parser JSON terhadap respons model kecerdasan buatan (Gemini), penyesuaian batasan skema untuk kompetensi yang belum teruji (*unassessed skills*), serta penyusunan *test harness* otomatis berbasis RSpec.
+  * *Kedalaman Backend*: Penegakan isolasi data multi-tenant, perancangan **dua berkas migrasi basis data reversibel** yang aman terhadap data eksisting (`portfolio_skills` dan `assessor_overrides`), resiliensi parser JSON terhadap respons model kecerdasan buatan (Gemini), penyesuaian batasan skema untuk kompetensi yang belum teruji (*unassessed skills*), serta penyusunan *test harness* otomatis berbasis RSpec.
   * *Kedalaman Frontend*: Rekonsiliasi kontrak data tabel evaluasi kesesuaian (*Fit/Gap*), visualisasi indikator koreksi manual asesor (*human override*), visualisasi status kompetensi yang belum dinilai (*unassessed*), komponen bukti kutipan transkrip yang dapat diperluas (*collapsible evidence*), serta penerapan rangkaian pengujian komponen berbasis Vitest dengan tingkat kelulusan 100%.
 
 ---
@@ -57,6 +57,8 @@ Berdasarkan audit alur kerja dari hulu ke hilir, evaluasi skema basis data, dan 
 
 ### Sinyal Kendala Teknis (*Constraint Signal*)
 Struktur basis data PostgreSQL pada tabel `portfolio_skills` memiliki batasan integritas `CHECK (ai_level BETWEEN 1 AND 5)`. Setiap perubahan logika untuk mengakomodasi status belum dinilai (*unassessed*) wajib diawali dengan modifikasi skema yang aman dan reversibel, bukan sekadar manipulasi nilai di tingkat aplikasi.
+
+Temuan lanjutan teridentifikasi selama implementasi: tabel `assessor_overrides` juga memiliki batasan `ai_level NOT NULL` dan `CHECK (ai_level >= 1 AND ai_level <= 5)`. Apabila seorang asesor mencoba memberikan kalibrasi manual pada kompetensi yang belum dinilai (`ai_level = NULL`), sistem akan mengalami kegagalan fatal `PG::NotNullViolation`. Oleh karena itu, diperlukan migrasi kedua `20260909000002_allow_null_ai_level_in_assessor_overrides.rb` untuk memperbarui batasan menjadi `CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))` serta memperbarui validasi model `AssessorOverride` menjadi `allow_nil: true`.
 
 ---
 
@@ -105,6 +107,13 @@ Sebelum penulisan kode dilaksanakan, ditetapkan lima kriteria penerimaan terstru
   * Status: **2 Berkas Pengujian Lolos, 7 Skenario Uji Lolos (100% Green)**
   * Durasi Eksekusi: **1.80 detik**
   * Cakupan: Verifikasi kalkulasi delta, penanganan kompetensi belum dinilai, visualisasi status kalibrasi manual, serta mekanisme ekspansi kutipan transkrip.
+* **Pengujian Unit & Integrasi Backend (RSpec)**:
+  Telah dibangun rangkaian pengujian backend pada komponen kritis layanan dan keamanan:
+  * `spec/services/portfolios/generator_spec.rb` — 2 skenario: verifikasi NULL untuk kompetensi belum dinilai, ekstraksi JSON dari markdown.
+  * `spec/services/fit_gap/engine_spec.rb` — 3 skenario: perbandingan berbasis aturan dengan `required_level` alias, parsing JSON markdown, fallback narasi.
+  * `spec/requests/tenant_isolation_spec.rb` — 2 skenario: pemblokiran akses lintas-penyewa pada override dan fitgap.
+  * `spec/models/session_spec.rb` — 2 skenario: verifikasi `invite_url` mengarah ke frontend (`localhost:5173`).
+  * **Total RSpec: 4 Berkas Pengujian, 9 Skenario Uji**
 * **Kompilasi Produksi Frontend (*Production Build*)**:
   * Perintah: `npm run build` (`tsc && vite build`)
   * Status: **1842 modul berhasil ditransformasi tanpa kesalahan (0 errors, waktu 3.3 detik)**.
@@ -124,6 +133,10 @@ Guna memastikan bahwa rangkaian pengujian otomatis memiliki sensitivitas nyata t
 Selama proses rekayasa, sarana bantu AI sempat mengusulkan agar penanganan kompetensi yang belum dinilai dilakukan dengan menetapkan nilai default `ai_level = 0` pada model ActiveRecord di Ruby.
 * **Analisis Risiko**: Berdasarkan inspeksi langsung terhadap berkas `db/schema.rb`, basis data PostgreSQL memiliki batasan `CHECK (ai_level BETWEEN 1 AND 5)`. Memasukkan angka 0 akan memicu kegagalan transaksi fatal `ActiveRecord::StatementInvalid: PG::CheckViolation` pada proses latar belakang.
 * **Tindakan Koreksi**: Saran tersebut ditolak. Solusi yang diimplementasikan adalah merancang berkas migrasi basis data reversibel `20260909000001_allow_null_ai_level_for_unassessed_skills.rb` untuk memperbarui batasan menjadi `CHECK (ai_level IS NULL OR (ai_level BETWEEN 1 AND 5))` serta memperbarui validasi model menjadi `allow_nil: true`.
+
+**Momen Verifikasi Kedua — Temuan Selama Tinjauan Kode**:
+Saat meninjau `portfolio_skills_controller.rb#override`, teridentifikasi bahwa tabel `assessor_overrides` memiliki `ai_level NOT NULL` di skema. Ini berarti jika asesor mencoba mengoverride kompetensi yang belum dinilai, sistem akan melempar `PG::NotNullViolation` meskipun migrasi pertama sudah dijalankan. Tanpa verifikasi menyeluruh lintas tabel, bug ini akan lolos ke produksi.
+* **Tindakan Koreksi**: Migrasi kedua `20260909000002_allow_null_ai_level_in_assessor_overrides.rb` dibuat, validasi `AssessorOverride` diperbarui dengan `allow_nil: true`, dan schema.rb diperbarui ke versi `2026_09_09_000002`.
 
 ---
 
